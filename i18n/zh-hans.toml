@@ -14,9 +14,6 @@ other = "归档"
 
 # posts/single.html
 #
-[seeAlso]
-other = "相关推荐"
-
 [wordCount]
 other = "{{ .WordCount }} 字"
 
