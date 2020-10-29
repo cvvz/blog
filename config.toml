@@ -26,8 +26,8 @@ googleAnalytics = "G-M8Q3DKDEVL"
   # Categories are disabled by default.
 
 [params]
-  dateform        = "Jan 2, 2006"
-  dateformShort   = "Jan 2"
+  dateform        = "2006-01-02"
+  dateformShort   = "2006-01-02"
   dateformNum     = "2006-01-02"
   dateformNumTime = "2006-01-02 15:04 -0700"
 
