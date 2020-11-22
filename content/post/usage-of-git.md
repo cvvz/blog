@@ -1,5 +1,5 @@
 ---
-title: "Git使用心得"
+title: "Git笔记"
 date: 2019-06-02T23:41:24+08:00
 draft: false
 comments: true
