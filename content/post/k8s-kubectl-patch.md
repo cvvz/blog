@@ -4,7 +4,7 @@ date: 2020-11-22T23:16:44+08:00
 draft: false
 comments: true
 keywords: ["kubectl", "kubernetes"]
-tags: ["kubernetes", "工具"]
+tags: ["kubernetes", "kubectl"]
 ---
 
 `kubectl patch` 用来修改 Kubernetes API 对象的字段。可以通过 `--type` 参数指定三种不同类型的 patch 方式：

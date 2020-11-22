@@ -4,7 +4,7 @@ date: 2019-06-10T11:44:52+08:00
 draft: false
 comments: true
 keywords: ["gdb"]
-tags: ["工具"]
+tags: ["gdb"]
 ---
 
 ## 多线程调试

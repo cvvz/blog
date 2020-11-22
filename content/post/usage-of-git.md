@@ -4,7 +4,7 @@ date: 2019-06-02T23:41:24+08:00
 draft: false
 comments: true
 keywords: ["git"]
-tags: ["工具"]
+tags: ["git"]
 ---
 
 > 整理一下最近学习的git知识，以及平时常用的git功能。
