@@ -1,5 +1,5 @@
 ---
-title: "白话kubernetes监控体系"
+title: "浅谈kubernetes监控体系"
 date: 2020-11-20T00:24:35+08:00
 draft: false
 comments: true
