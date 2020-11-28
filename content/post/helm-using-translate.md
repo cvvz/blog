@@ -1,7 +1,7 @@
 ---
 title: "[翻译] 使用helm"
 date: 2020-11-23T22:55:34+08:00
-draft: false
+draft: true
 comments: true
 keywords: ["helm"]
 tags: ["helm"]
