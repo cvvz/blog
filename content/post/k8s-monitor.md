@@ -71,6 +71,11 @@ Metrics-server（heapster的替代品）**从kubelet中**获取Pod的监控指�
 
 Custom Metrics的玩法应该是这样的：
 
-1. 应用程序，或者它的exporter暴露出API供Prometheus采集
-2. 造一个自定义Metrics-Server，从Prometheus中获取监控数据
-3. HPA组件通过访问`/apis/custom.metrics.k8s.io/`进行决策。
+{{< figure src="/hpa.drawio.svg" width="600px" >}}
+如上图所示
+
+1. 应用Pod，或者它的exporter暴露出API供Prometheus采集
+2. 编写Custom Metrics Server，从Prometheus中获取监控数据
+3. HPA组件通过访问`/apis/custom.metrics.k8s.io/`进行扩缩容决策。
+
+
