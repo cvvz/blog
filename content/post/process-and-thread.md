@@ -4,7 +4,7 @@ date: 2019-06-23T20:34:56+08:00
 draft: false
 comments: true
 keywords: ["process", "thread"]
-tags: ["计算机基础"]
+tags: ["Linux"]
 ---
 ## 从“程序”开始
 

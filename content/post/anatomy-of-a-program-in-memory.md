@@ -4,7 +4,7 @@ date: 2019-06-07T23:14:03+08:00
 draft: false
 comments: true
 keywords: ["虚拟内存"]
-tags: ["计算机基础"]
+tags: ["Linux"]
 ---
 
 对于**32位 x86 Linux操作系统**，典型的进程地址空间如下图所示：

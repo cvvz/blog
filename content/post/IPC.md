@@ -4,7 +4,7 @@ date: 2018-11-02T22:34:20+08:00
 draft: false
 comments: true
 keywords: ["IPC"]
-tags: ["计算机基础"]
+tags: ["Linux"]
 ---
 
 进程间通信的六种方式：

@@ -57,7 +57,7 @@ Prometheus是Kubernetes监控体系的核心。它的[架构](https://prometheus
 
 ## kubernetes HPA
 
-为了automate everything，采集到了性能指标之后，肯定不能只是发送告警，让运维介入，系统应该具备根据指标自动弹性伸缩的能力。**Kubernetes自身具备了水平弹性伸缩的能力，下面介绍和Kubernetes的垂直弹性伸缩(HPA)能力相关的两个内容**。
+采集到了性能指标之后，发送发送告警，让运维介入，这只是最初级的运维方式。更高级的方式是让系统自身具备根据指标进行水平弹性伸缩 (HPA) 的能力。
 
 ### Metrics-Server
 

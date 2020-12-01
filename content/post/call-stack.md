@@ -4,7 +4,7 @@ date: 2019-09-03T18:44:12+08:00
 draft: false
 comments: true
 keywords: ["call stack", "调用栈", "树莓派"]
-tags: ["计算机基础"]
+tags: ["Linux"]
 ---
 > 理解本篇文章需要具备一些GDB、汇编、寄存器的基础知识。可以在阅读的过程中碰到不理解的地方再针对性的学习。
 
