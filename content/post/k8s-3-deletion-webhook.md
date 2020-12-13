@@ -1,7 +1,7 @@
 ---
 title: "为什么删除Pod时webhook收到三次delete请求"
 date: 2020-12-13T19:26:15+08:00
-draft: true
+draft: false
 comments: true
 keywords: ["kubernetes"]
 tags: ["kubernetes"]
@@ -274,4 +274,4 @@ func (s *store) conditionalDelete(ctx context.Context, key string, out runtime.O
 }
 ```
 
-validateDeletion 即为DELETE准入控制校验。
+validateDeletion 即为进行DELETE准入控制校验的地方，这个过程中必定会调用到Validating webhook，也就有了第三次delete请求。至于为什么要再做一次准入控制，我也不太明白。
