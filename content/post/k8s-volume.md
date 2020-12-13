@@ -37,7 +37,7 @@ docker run -v /home:/test ...
 
 ## kubelet挂载卷的过程
 
-当一个Pod被调度到一个节点上之后，kubelet首先为这个Pod创建一个Volume目录：
+当一个Pod被调度到一个节点上之后，kubelet首先为这个Pod在宿主机上创建一个Volume目录：
 
 **/var/lib/kubelet/pods/<Pod的ID>/volumes/kubernetes.io~<Volume类型>/<Volume名字>**。
 

@@ -96,3 +96,5 @@ aggregated API server 认证 api server 的过程就是自动进行的：
 这样就省去了为api server配置和维护kubeconfig文件的步骤。**但是服务端（admission webhook）的证书仍然需要自己生成和维护，并且设置API Service中的 `spec.caBundle` 字段，来指定 api server 使用的 CA 证书**。设置 `spec.insecureSkipTLSVerify` 为 true 则不使用TLS加密通信。
 
 > 生产环境中，可以使用 [cert-manager](https://github.com/jetstack/cert-manager) 来自动生成和管理 TLS 证书，而不是直接存在 secret 资源对象中。
+
+以aggregated API Server的方式部署webhook带来的另一个好处是，aggregated API Server是使用[kubernetes apiserver](https://github.com/kubernetes/apiserver)这个lib库构建的，因此复用了kube-apiserver的认证和鉴权机制。
