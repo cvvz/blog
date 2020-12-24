@@ -1,7 +1,7 @@
 ---
 title: "容器相关知识汇总"
 date: 2020-12-24T10:33:00+08:00
-draft: true
+draft: false
 comments: true
 keywords: ["容器", "kubernetes"]
 tags: ["容器", "kubernetes"]
@@ -93,7 +93,7 @@ cpuset cgroup用于进程绑核，主要通过设置`cpuset.cpus`和`cpuset.mem
 >
 > Q：执行 `kubectl top` 命令获取到的pod指标是从哪里来的？
 >
-> A：整个执行路径是：`kubectl -> apiserver -> aggregated-apiserver -> metric-server -> kubelet(cAdvisor) -> cgroup`。最终来源就是cgroup。
+> A：整个执行路径是：`kubectl -> apiserver -> aggregated-apiserver -> metric-server -> kubelet(cAdvisor) -> cgroup`。最终来源就是cgroup。而Linux `top`命令的指标数据的来源是`/proc`文件系统。
 
 ## kubelet、Docker、CRI、OCI
 
