@@ -13,6 +13,18 @@ enableEmoji = true  # Shorthand emojis in content files - https://gohugo.io/func
 googleAnalytics = "G-M8Q3DKDEVL"
 # disqusShortname = "yourdiscussshortname"
 
+[markup]
+  [markup.highlight]
+    codeFences = true
+    guessSyntax = true
+    hl_Lines = ""
+    lineNoStart = 1
+    lineNos = true
+    lineNumbersInTable = false
+    noClasses = true
+    style = "github"
+    tabWidth = 4
+
 [author]
   name = "陈维志"
 
