@@ -9,7 +9,7 @@ keywords: ["celery", "Linux"]
 tags: ["celery", "Linux"]
 ---
 
-> 最近在组内基于Flask + rabbitMQ + Celery搭建的web平台上开发需求时碰到了几个比较有趣的问题，在这里记录下来。
+> 组内有一个基于Flask + rabbitMQ + Celery搭建的web平台，最近在上面开发需求时碰到了一个比较有趣的问题，在这里记录下来。
 
 ## 问题背景
 
