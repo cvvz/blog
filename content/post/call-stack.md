@@ -5,6 +5,8 @@ draft: false
 comments: true
 keywords: ["call stack", "调用栈", "树莓派"]
 tags: ["Linux"]
+toc: true
+autoCollapseToc: false
 ---
 > 理解本篇文章需要具备一些GDB、汇编、寄存器的基础知识。可以在阅读的过程中碰到不理解的地方再针对性的学习。
 

@@ -5,6 +5,8 @@ draft: false
 comments: true
 keywords: ["kubernetes", "monitor"]
 tags: ["kubernetes"]
+toc: true
+autoCollapseToc: false
 ---
 
 ## 监控和指标
@@ -77,5 +79,3 @@ Custom Metrics的玩法应该是这样的：
 1. 应用Pod，或者它的exporter暴露出API供Prometheus采集
 2. 编写Custom Metrics Server，从Prometheus中获取监控数据
 3. HPA组件通过访问`/apis/custom.metrics.k8s.io/`进行扩缩容决策。
-
-

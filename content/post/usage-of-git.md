@@ -5,6 +5,8 @@ draft: false
 comments: true
 keywords: ["git"]
 tags: ["git"]
+toc: true
+autoCollapseToc: false
 ---
 
 > 整理一下最近学习的git知识，以及平时常用的git功能。

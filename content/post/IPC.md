@@ -5,6 +5,8 @@ draft: false
 comments: true
 keywords: ["IPC"]
 tags: ["Linux"]
+toc: true
+autoCollapseToc: false
 ---
 
 进程间通信的六种方式：

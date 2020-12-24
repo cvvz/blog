@@ -5,6 +5,8 @@ draft: false
 comments: true
 keywords: ["kubernetes"]
 tags: ["kubernetes"]
+toc: true
+autoCollapseToc: false
 ---
 
 最近在玩admission webhook时，发现一个奇怪的现象：我配置了validatingWebhookConfiguration使其监听pod的删除操作，结果发现每次删除Pod的时候，webhook会收到三次delete请求：

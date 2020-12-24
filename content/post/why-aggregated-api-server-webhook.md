@@ -5,13 +5,15 @@ draft: false
 comments: true
 keywords: ["安全","kubernetes"]
 tags: ["kubernetes", "安全"]
+toc: true
+autoCollapseToc: false
 ---
 
 > openshift 的 [generic-admission-server库](https://github.com/openshift/generic-admission-server#generic-admission-server) 是用来编写admission webhook的lib库，它声称**使用该库可以避免为每一个webhook创建和维护客户端证书和密钥所带来的复杂性，开发者只需要维护服务端密钥和证书即可**。我们来看下它是如何实现的。
 
 首先需要知道的是，由于webhook可以从api server接收API对象并对其进行修改，功能十分强大，因此在生产环境中，webhook和api server之间需要进行双向安全认证。即，客户端（api server）和服务端（webhook）双方都需要提供证书，对方则使用CA证书对证书进行校验。
 > 在一次加密通信中，证书、私钥、CA证书是怎么工作的可以参考我之前写的[这篇文章](https://cvvz.github.io/post/about-computer-security/)。
-> 
+>
 > 以下讨论的关注点在于如何简化**客户端证书**的部署，**即api server向webhook提供的证书这一部分**。webhook向api server提供的服务端证书仍然是需要手工部署的。
 
 ## admission webhook认证api server的过程

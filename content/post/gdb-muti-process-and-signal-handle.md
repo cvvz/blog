@@ -5,6 +5,8 @@ draft: false
 comments: true
 keywords: ["gdb"]
 tags: ["gdb"]
+toc: true
+autoCollapseToc: false
 ---
 
 ## 多线程调试

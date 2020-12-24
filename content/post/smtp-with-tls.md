@@ -5,6 +5,8 @@ draft: false
 comments: true
 keywords: ["tls"]
 tags: ["安全"]
+toc: true
+autoCollapseToc: false
 ---
 
 > 背景：某进程调用 `libcurl` 提供的 `curl_easy_perform` 接口与邮箱服务器进行smtp通信时，服务端返回56(`CURLE_RECV_ERROR`)错误。由于服务端日志信息不足，于是想到可以通过抓包查看建立smtp连接时的错误信息。
