@@ -15,7 +15,7 @@ tags: ["celery", "Linux"]
 
 web平台整体架构图如下所示：
 
-{{< figure src="/platform.drawio.svg" width="1000px" >}}
+{{< figure src="/platform.drawio.svg" width="800px" >}}
 
 Flask向rabbitMQ发送任务消息，后者再将任务分发给不同的Celery worker进行处理。由于每一个任务的处理时间较长，为了不阻塞worker处理下一个任务，在worker中，通过两次fork的方式，生成孤儿进程在后台进行任务处理。
 
