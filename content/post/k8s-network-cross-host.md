@@ -11,7 +11,7 @@ tags: ["kubernetes","CNI","容器"]
 
 ## 初始化infra容器网络环境
 
-当kubelet通过[RunPodSandbox](https://github.com/kubernetes/kubernetes/blob/master/staging/src/k8s.io/cri-api/pkg/apis/services.go#L66)创建好`PodSandbox`，即infra容器后，就需要调用[SetUpPod](https://github.com/kubernetes/kubernetes/blob/master/pkg/kubelet/dockershim/network/plugins.go#L73)方法为Pod（infra容器）创建网络环境，底层是调用CNI的[AddNetwork](https://github.com/containernetworking/cni/blob/master/libcni/api.go#L80)为infra容器配置网络环境。
+当kubelet通过调用CRI的[RunPodSandbox](https://github.com/kubernetes/kubernetes/blob/master/staging/src/k8s.io/cri-api/pkg/apis/services.go#L66)创建好`PodSandbox`，即infra容器后，就需要调用[SetUpPod](https://github.com/kubernetes/kubernetes/blob/master/pkg/kubelet/dockershim/network/plugins.go#L73)方法为Pod（infra容器）创建网络环境，底层是调用CNI的[AddNetwork](https://github.com/containernetworking/cni/blob/master/libcni/api.go#L80)为infra容器配置网络环境。
 
 这个配置网络环境的过程，就是kubelet从cni配置文件目录（`--cni-conf-dir`参数指定）中读取文件，并使用该文件中的CNI配置配置infra网络。kubelet根据配置文件，需要使用CNI插件二进制文件（存放在`--cni-bin-dir`参数指定的目录下）实际配置infra网络。
 
@@ -19,12 +19,12 @@ tags: ["kubernetes","CNI","容器"]
 
 1. **Main 插件**，它是用来创建具体网络设备的二进制文件，比如bridge（网桥设备）、loopback（lo 设备）、ptp（Veth Pair 设备）等等
 2. **IPAM（IP Address Management）插件**，用来给容器分配IP地址，比如dhcp和host-local。
-3. **CNI 社区维护的内置 CNI 插件**，比如flannel，提供跨主机通信方案
+3. **CNI 社区维护的第三方 CNI 插件**，比如`flannel`，提供跨主机通信方案
 
 初始化一个容器网络环境的过程大致如下：
 
 1. 没有网桥就使用`bridge`创建一个网桥设备
-2. 使用`ptp`创建一个veth pair设备，并且把一端插在容器里，成为容器的eth0网卡，另一段插在网桥上
+2. 使用`ptp`创建一个veth pair设备，并且把一端插在容器里，成为容器的eth0网卡，另一端插在网桥上
 3. 使用`dhcp`或`host-local`为eth0网卡分配IP地址
 4. 调用第三方CNI插件，比如`flannel`，实现容器跨主机通信方案
 
