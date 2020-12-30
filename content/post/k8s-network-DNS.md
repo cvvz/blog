@@ -1,12 +1,12 @@
 ---
 title: "kubernetes网络之DNS"
 date: 2020-12-30T09:41:51+08:00
-draft: true
+draft: false
 comments: true
 toc: true
 autoCollapseToc: false
-keywords: []
-tags: []
+keywords: ["kubernetes", "DNS"]
+tags: ["kubernetes", "DNS"]
 ---
 
 ## Service和DNS
