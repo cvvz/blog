@@ -117,7 +117,8 @@ kube-prox 253942 root   12u  IPv6 1852002168      0t0  TCP *:31849 (LISTEN)
 * kube-proxy需要为service配置大量的iptables规则，并且刷新这些规则以确保正确性；
 * iptables的规则是以链表的形式保存的，对iptables的刷新需要遍历链表
 
-解决办法就是使用IPVS模式的kube-proxy。IPVS是Linux内核实现的四层负载均衡，和iptables一样底层也是基于netfilter，但使用更高效的数据结构（散列表），允许几乎无限的规模扩张。
+解决办法就是使用IPVS模式的kube-proxy。IPVS是Linux内核实现的四层负载均衡，因此相比于通过配置iptables规则进行“投机取巧”式的负载均衡，IPVS更加专业。IPVS
+和iptables一样底层也是基于netfilter，但使用更高效的数据结构（散列表），允许几乎无限的规模扩张。
 
 创建一个service时，IPVS模式kube-proxy会创建一块虚拟网卡，并且把service的ClusterIP绑在网卡上，然后设置这个网卡的后端real server，对应的是EndPoints，并设置负载均衡规则。这样，数据包就会先发送到kube-proxy的虚拟网卡上，然后转发到后端Pod。
 
