@@ -58,7 +58,7 @@ options ndots:5
 
 ## Headless Service的域名解析
 
-常规的ClusterIP类型的Service的域名解析如上所述，DNS服务会返回一个`A记录`，即域名和ClusterIP的对应关系：
+**无论是kube-dns还是CoreDNS，基本原理都是通过watch Service和Pod，生成DNS记录**。常规的ClusterIP类型的Service的域名解析如上所述，DNS服务会返回一个`A记录`，即域名和ClusterIP的对应关系：
 
 ```shell
 ➜  ~ k exec -it debug-pod -n default -- nslookup kubernetes.default
