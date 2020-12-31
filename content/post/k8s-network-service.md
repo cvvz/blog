@@ -9,7 +9,7 @@ keywords: ["kubernetes", "Linux"]
 tags: ["kubernetes", "Linux"]
 ---
 
-在kubernetes中，service其实只是一个保存在etcd里的API对象，并不对应任何具体的实体，真正起作用的是watch service、endpoint、pod等资源的的DNS、kube-proxy，以及iptables等，他们共同配合，实现service的各项功能。
+在kubernetes中，service其实只是一个保存在etcd里的API对象，并不对应任何具体的实例。service即k8s中的“微服务”，而它的服务注册与发现、健康检查、负载均衡等功能其实是底层watch service、endpoint、pod等资源的DNS、kube-proxy，以及iptables等共同配合实现的。
 
 ## 从集群内部访问ClusterIP服务
 
