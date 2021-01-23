@@ -9,6 +9,40 @@ keywords: ["kubernetes", "DNS"]
 tags: ["kubernetes", "DNS"]
 ---
 
+## 默认DNS策略
+
+Pod默认的[dns策略](https://kubernetes.io/zh/docs/concepts/services-networking/dns-pod-service/#pod-s-dns-policy)是 `ClusterFirst`，意思是先通过kubernetes的**权威DNS服务器**（如CoreDNS）直接解析出A记录或CNAME记录；如果解析失败，再根据配置，将其转发给**上游DNS服务器**。以CoreDNS为例，它的配置文件Corefile如下所示：
+
+```shell
+➜  ~ kubectl get cm -n kube-system coredns -o yaml
+apiVersion: v1
+data:
+  Corefile: |
+    .:53 {
+        errors
+        health {
+           lameduck 5s
+        }
+        ready
+        kubernetes cluster.local in-addr.arpa ip6.arpa {
+           pods insecure
+           fallthrough in-addr.arpa ip6.arpa
+           ttl 30
+        }
+        prometheus :9153
+        forward . /etc/resolv.conf
+        cache 30
+        loop
+        reload
+        loadbalance
+    }
+kind: ConfigMap
+...
+```
+
+第17行使用[forward插件](https://coredns.io/plugins/forward/)配置了上游域名服务器为主机的`/etc/resolv.conf`中指定的`nameserver`。
+
+
 ## Service和DNS
 
 尽管kubelet在启动容器时，会将同namespace下的Service信息注入到容器的环境变量中：
@@ -41,11 +75,11 @@ search default.svc.cluster.local svc.cluster.local cluster.local
 options ndots:5
 ```
 
-`nameserver 192.168.0.2`即表示DNS服务的地址为`192.168.0.2`。
+* `nameserver 192.168.0.2`这一行即表示DNS服务的地址（Cluster IP）为`192.168.0.2`。
 
-`search`这一行表示，如果无法直接解析域名，则会尝试加上`default.svc.cluster.local`, `svc.cluster.local`, `cluster.local`后缀进行域名解析。
+* `search`这一行表示，如果无法直接解析域名，则会尝试加上`default.svc.cluster.local`, `svc.cluster.local`, `cluster.local`后缀进行域名解析。
 
-> 其中`default`是namespace，`cluster.local`是默认的集群域名后缀，kubelet可以通过`--cluster_domain`配置。
+  > 其中`default`是namespace，`cluster.local`是默认的集群域名后缀，kubelet也可以通过`--cluster-domain`参数进行配置。
 
 也就是说：
 
