@@ -43,7 +43,7 @@ warning: libxxx.so, needed by ./libyyy.so, not found (try using -rpath or -rpath
 
 意思是这个so文件格式不识别，ld试图将它当作链接文件来看待，但仍然出错。查看发现该so文件大小只有几字节，且附近有一个带后缀.1的文件libxxx.so.1。**原因是该so文件实际是一个软链接文件，链接对象就是libxxx.so.1**；但由于该模块提供的lib压缩包是在windows下解压后通过远程文件系统挂载到linux系统上的，软连接文件被当成普通文件解压了。解决办法是重新创建软连接或直接在linux下解压。
 
-> so后面带的.1是版本号为1的意思。这是linux下动态库版本控制的一种方法。具体可以看(动态链接库的版本控制)[]一文。
+> so后面带的.1是版本号为1的意思。这是linux下动态库版本控制的一种方法。具体可以看[动态链接库的版本控制](https://cvvz.github.io/post/version-control-of-shared-object)一文。
 
 ## undefined reference to
 
