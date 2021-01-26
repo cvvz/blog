@@ -1,6 +1,6 @@
 ---
-title: "进程和线程"
-date: 2019-06-23T20:34:56+08:00
+title: "关于进程和线程的一些思考"
+date: 2018-06-23T20:34:56+08:00
 draft: false
 comments: true
 keywords: ["process", "thread"]

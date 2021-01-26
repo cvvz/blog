@@ -1,6 +1,6 @@
 ---
 title: "Git笔记"
-date: 2019-06-02T23:41:24+08:00
+date: 2018-06-02T23:41:24+08:00
 draft: false
 comments: true
 keywords: ["git"]
