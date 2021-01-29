@@ -1,5 +1,5 @@
 ---
-title: "Celery Worker僵尸进程问题定位记录"
+title: "【问题定位】Celery Worker产生僵尸进程"
 date: 2020-03-30T10:36:36+08:00
 draft: false
 comments: true
