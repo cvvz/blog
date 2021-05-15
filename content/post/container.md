@@ -1,5 +1,5 @@
 ---
-title: "容器相关知识汇总"
+title: "容器"
 date: 2020-12-24T10:33:00+08:00
 draft: false
 comments: true
@@ -11,11 +11,11 @@ autoCollapseToc: false
 
 ## 容器镜像
 
-容器镜像就是容器的rootfs。通过 Dockerfile 制作容器镜像时，就相当于增加 rootfs 层。通过容器镜像运行一个容器时，操作系统内核先将镜像中的每一层**联合挂载**在一个统一的目录下，然后再通过`chroot`把容器的根目录挂载到这个统一的目录下。
+容器镜像就是容器的rootfs。通过 Dockerfile 制作容器镜像时，就相当于增加 rootfs 层。通过容器镜像运行一个容器时，操作系统内核先将镜像中的每一层**联合挂载**在一个统一的目录下，然后再通过`chroot`把容器的根目录挂载到这个统一的目录下。
 
 通过 Dockerfile 生成容器镜像时，每个原语执行后，都会生成一个对应的镜像层。需要注意的是，即使原语本身并没有明显地修改文件的操作（比如，ENV 原语），它对应的层也会存在。只不过在外界看来，**这个层是空的**。
 
-Docker 中最常用的联合文件系统有三种：`AUFS`、`Devicemapper` 和 `OverlayFS`。
+Docker 中最常用的联合文件系统（`UnionFS`）有三种：`AUFS`、`Devicemapper` 和 `OverlayFS`。
 
 > overlay2 文件系统最多支持 128 个层数叠加，换句话说 Dockerfile 最多只能写 128 行。
 
@@ -46,13 +46,23 @@ Docker 中最常用的联合文件系统有三种：`AUFS`、`Devicemapper` 和 
     >
     > 在操作系统里，`cpu.cfs_period_us` 的值一般是个固定值，所以在kubernetes中，当你设置了Pod的`limits.cpu`的值后，kubelet会去修改cgroup中的`cpu.cfs_quota_us`这个参数来调整容器cpu的使用上限。
     >
-    > 在kubernetes中，当设置了 Pod的`requests.cpu` 的值时，kubelet会去调整 `cpu.shares` 这个参数，来保证即使节点cpu使用率被打满了，容器仍然能分得一定量的cpu时间。（cpu.shares = 1024 表示 1 个 CPU）
+    > 在kubernetes中，当设置了 Pod的`requests.cpu` 的值时，kubelet会去调整 `cpu.shares` 这个参数，来保证即使节点cpu使用率被打满了，容器仍然能分得一定量的cpu时间。
 
-### cpu cgroup 和 cpu 使用率
+### cpu 使用率
 
 cpu时间的使用类型如下图所示：
 
 {{< figure src="/cpu-usage.jpeg" width="650px" >}}
+
+有两种情形可以认为进程处于R（运行态）：
+
+* 在运行队列中，等待cpu调度
+* 获得了cpu资源，正在进行cpu运算
+
+进程处于睡眠态（在cpu调度器的等待队列中）也有两种情形：
+
+* 可中断，显示为 S 状态，可能是因为**申请不到资源**导致被挂起
+* 不可中断睡眠，显示为 D 状态，可能是因为**等待I/O操作完成**，为了保证数据的一致性，这时进程不响应任何信号
 
 对于进程的 CPU 使用率，只包含两部分:
 
@@ -61,12 +71,16 @@ cpu时间的使用类型如下图所示：
 
 至于 wa、hi、si，这些 I/O 或者中断相关的 CPU 使用，CPU Cgroup 不会去做限制。因为本身这些也不属于某个进程的cpu时间。
 
-于是就要提到 cpu 使用率和 cpu 平均负载的区别了：
+### cpu 负载
+
+cpu 使用率和 cpu 平均负载的区别：
 
 * cpu使用率是进程使用cpu的时间，包括用户态和内核态的时间之和。
 * cpu平均负载≈CPU可运行队列中的进程数+**CPU休眠队列中不可中断状态的进程数**。
 
-当节点上处于D状态的进程数量变多的时候，cpu的平均负载会升高，此时大量进程排队竞争disk I/O资源，但cpu可运行队列中的进程数却很少，所以虽然使用率很低，但是仍然会拖慢进程速度。
+当节点上处于D状态的进程数量变多的时候，cpu的平均负载会升高，此时大量进程排队竞争disk I/O资源，但cpu可运行队列中的进程数却很少，所以虽然使用率很低，但是仍然会拖慢进程速度。
+
+### cpu cgroup
 
 cpu cgroup能限制cpu的使用率，但是cpu cgroup并没有办法解决平均负载升高的问题。
 
