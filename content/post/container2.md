@@ -1,7 +1,7 @@
 ---
 title: "容器2"
 date: 2021-04-23T16:52:20+08:00
-draft: true
+draft: false
 comments: true
 keywords: ["容器", "kubernetes"]
 tags: ["容器", "kubernetes"]
