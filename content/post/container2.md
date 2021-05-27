@@ -127,7 +127,9 @@ Cgroup v2的变化：一个进程属于一个**控制组**，在这个控制组�
 
 ### capability
 
-Linux在kernel 2.2之前，只存在root用户和非root用户之分，在2.2之后，将root用户的特权做了更细粒度的划分，每个特权单元称之为[capability](https://man7.org/linux/man-pages/man7/capabilities.7.html)。`privileged`这个参数的意思就是容器拥有所有capability。容器启动时，缺省只有[15个capabilities](https://github.com/opencontainers/runc/blob/v1.0.0-rc92/libcontainer/SPEC.md#security)。
+k8s没有对user namespace进行隔离，所以我们在容器里运行的是root用户。但是由于缺省启动容器时，系统只为1号进程开启了 [15个capabilities](https://github.com/opencontainers/runc/blob/v1.0.0-rc92/libcontainer/SPEC.md#security)。而通过`kubectl exec -- sh`进入到容器里，启动的`sh`进程（**所有命令的父进程**）和容器的1号进程的 capabilities 相同。
+
+我们可以通过配置容器的 [SecurityContext](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.21/#securitycontext-v1-core) 里的`capabilities`，或者配置容器为`privileged`。
 
 ### user namespace
 
