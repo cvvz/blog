@@ -125,7 +125,7 @@ Cgroup v2的变化：一个进程属于一个**控制组**，在这个控制组�
 
 ## 安全
 
-### capability
+### [capability](https://man7.org/linux/man-pages/man7/capabilities.7.html)
 
 k8s没有对user namespace进行隔离，所以我们在容器里运行的是root用户。但是由于缺省启动容器时，系统只为1号进程开启了 [15个capabilities](https://github.com/opencontainers/runc/blob/v1.0.0-rc92/libcontainer/SPEC.md#security)。而通过`kubectl exec -- sh`进入到容器里，启动的`sh`进程（**所有命令的父进程**）和容器的1号进程的 capabilities 相同。
 
