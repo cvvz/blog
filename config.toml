@@ -84,6 +84,11 @@ googleAnalytics = "G-M8Q3DKDEVL"
     weight = 10
 
   [[menu.main]]
+    name = "读书"
+    url = "read/"
+    weight = 20
+
+  [[menu.main]]
     name = "关于"
     url = "about/"
-    weight = 20
+    weight = 30
