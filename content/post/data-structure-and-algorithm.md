@@ -84,8 +84,8 @@ C数组访问越界会造成“踩内存”。
    2. 定时器
 2. [数据流的中位数](https://leetcode-cn.com/problems/find-median-from-data-stream/)、99线问题
 3. TopK问题
-   1. [静态topK](https://leetcode-cn.com/problems/kth-largest-element-in-an-array/)
-   2. [动态topK](https://leetcode-cn.com/problems/kth-largest-element-in-a-stream/)
+   1. [静态topK](https://leetcode-cn.com/problems/kth-largest-element-in-an-array/)（从上往下堆化）
+   2. [动态topK](https://leetcode-cn.com/problems/kth-largest-element-in-a-stream/)（从下往上堆化）
 
 ### 图
 
