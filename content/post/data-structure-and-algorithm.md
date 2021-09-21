@@ -75,7 +75,7 @@ C数组访问越界会造成“踩内存”。
 
 1. 合并有序小文件
 2. 定时器
-3. 求流数据的中位数、99线
+3. [数据流的中位数](https://leetcode-cn.com/problems/find-median-from-data-stream/)、99线
 4. TopK问题
 
 ### 图
