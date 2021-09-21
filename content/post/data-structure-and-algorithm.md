@@ -64,19 +64,22 @@ C数组访问越界会造成“踩内存”。
     > “平衡”的意思，其实就是让整棵树左右看起来比较“对称”、比较“平衡”，不要出现左子树很高、右子树很矮的情况。这样就能让整棵树的高度相对来说低一些，相应的插入、删除、查找等操作的效率高一些。
 * 红黑树
 
-#### [堆（优先级队列）](https://leetcode-cn.com/tag/heap-priority-queue/problemset/)
+#### [堆](https://leetcode-cn.com/tag/heap-priority-queue/problemset/)
 
-堆的核心操作：
+**堆的核心操作：**
 
 1. 往堆尾部插入一个元素（**从下往上**堆化（heapify））
 2. 删除堆顶元素，并重新堆化（**从上往下**）
 
 [**堆的应用**](https://time.geekbang.org/column/article/70187):
 
-1. 合并有序小文件
-2. 定时器
-3. [数据流的中位数](https://leetcode-cn.com/problems/find-median-from-data-stream/)、99线
-4. TopK问题
+1. 优先级队列
+   1. 合并有序小文件
+   2. 定时器
+2. [数据流的中位数](https://leetcode-cn.com/problems/find-median-from-data-stream/)、99线问题
+3. TopK问题
+   1. [静态topK](https://leetcode-cn.com/problems/kth-largest-element-in-an-array/)
+   2. [动态topK](https://leetcode-cn.com/problems/kth-largest-element-in-a-stream/)
 
 ### 图
 
