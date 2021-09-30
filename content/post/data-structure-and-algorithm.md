@@ -31,6 +31,8 @@ C数组访问越界会造成“踩内存”。
 
 递归的算法都可以用栈来实现。
 
+> 高性能定时器，除了可以用堆实现，还可以用环形队列，详见 [时间轮算法 HashedWheelTimer](https://zhuanlan.zhihu.com/p/65835110)
+
 ### hash表
 
 > 高级语言内置了hash表，比如Java 中的 HashMap，golang中的map数据类型。
