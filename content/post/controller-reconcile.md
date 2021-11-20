@@ -1,7 +1,7 @@
 ---
 title: "怎么让controller周期性的reconcile"
 date: 2021-11-20T14:17:23+08:00
-draft: true
+draft: false
 comments: true
 toc: true
 autoCollapseToc: false
