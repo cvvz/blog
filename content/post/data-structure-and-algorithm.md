@@ -5,8 +5,8 @@ draft: false
 comments: true
 toc: true
 autoCollapseToc: false
-keywords: ["coding", "golang"]
-tags: ["coding", "golang"]
+keywords: ["code", "golang"]
+tags: ["code", "golang"]
 ---
 
 ## 常见数据结构
