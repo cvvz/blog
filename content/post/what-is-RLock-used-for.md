@@ -24,19 +24,19 @@ tags: ["code", "golang"]
 
 最常见的就是数据库的隔离级别，RC就是为了防止脏读，通过加写锁，避免执行事务写数据期间被读到脏数据；RR就是在读之前加读锁，这样就能保证一次事务中，多次读读到的数据是相同的，而不会读脏数据。
 
-**我在code review中犯的错误，是因为我以为给map加锁就是为了避免脏读，然而又因为业务逻辑中并不涉及事务，所以我认为没必要加读锁，只是读数据的时候加一下锁也避免不了脏读。**
+**我在code review中犯的错误，是因为我以为给map加锁就是为了避免脏读。然而又因为业务逻辑中并不涉及事务操作，所以我认为没必要加读锁，而且仅仅在读数据的时候加一下锁也避免不了脏读，因为不是一把事务锁。**
 
-### 语言运行时的维度
+### 语言运行时维度
 
 1. golang的slice在append时，如果没有超出cap大小，那么是不会重新分配内存的，这时数据是直接append到底层的数组中的。如果两个线程并发的append同一个slice，那么就可能写同一片内存，这样可能会导致append后的总数不符合预期（变少）。这种情况我们也要用锁，这是语言运行时实现层面对程序员的约束。
 
-2. golang的map被设计为非并发安全的（[原因](https://go.dev/doc/faq#atomic_maps)），在运行时层面如果并发时不加读锁或者写锁，就可能会报错，`fatal error: concurrent map read and map write`。我们可以通过golang race detector进行检查。
+2. golang的map被设计为非并发安全的（[原因](https://go.dev/doc/faq#atomic_maps)），在应用层如果并发时不加读锁或者写锁，就可能会报错，`fatal error: concurrent map read and map write`。我们可以通过golang race detector进行检查。那为什么map的读写需要加锁呢（不管是由应用程序加，还是由语言特性加）？原因在于map类型的一次读写不是原子性的（需要进行哈希计算、解决哈希冲突等等）。**注意这里所说的原子性，不是指上面说的应用层的原子性；而是语言运行时实现层面对程序员的约束。**
 
 3. 还有一种是在语言实现时就设计为并非原子性赋值的，可以看看这篇文章中的[讨论](https://cloud.tencent.com/developer/article/1810536)，典型的有复数类型。
 
 ### 操作系统维度
 
-map读写需要加锁的真正原因是一次读和写不一定是原子的。**这个原子指的是汇编/操作系统层面的原子性，而不是类似于数据库应用事务的那种原子性**！这是造成我认知混淆主要的原因。
+**这个原子指的是编译器/操作系统层面的原子性，而不是上述两种原子性**！
 
 这里又分为两种情形：
 
@@ -48,8 +48,8 @@ map读写需要加锁的真正原因是一次读和写不一定是原子的。**
 
 虽然加锁很快，并且在大多数场景下我们都不会碰到锁性能问题。但是在某些极端场景下，如果对map频繁的加读写锁，还是会带来一些性能损失。我们可以采取copy-on-write的方式避免对map加锁，从而提高性能。
 
-方法就是对map的写操作变成整个map的替换，由于map替换是指针赋值，而指针赋值在golang中是原子性的，所以不会存在**汇编级别的**并发问题。
+方法就是对map的写操作变成整个map的替换，由于map替换是指针赋值，而指针赋值在golang中是原子性的，所以就不会存在map并发问题。
 
-典型代码可以查看[煎架](https://github.com/Terry-Mao)的[这段代码](https://github.com/Terry-Mao/gopush-cluster/blob/master/rpc/rand_lb.go#L221-L232)
+典型代码可以查看[煎鱼](https://github.com/Terry-Mao)的[这段代码](https://github.com/Terry-Mao/gopush-cluster/blob/master/rpc/rand_lb.go#L221-L232)
 
 > 不过这段代码也引起了一些[争议](https://github.com/Terry-Mao/gopush-cluster/issues/44)，主要争议在于golang的指针赋值到底是不是原子的。关于这个问题，可以看看[这个问答](https://stackoverflow.com/questions/21447463/is-assigning-a-pointer-atomic-in-go)，简单来说就是，除了 `sync.atomic` 中的操作以外，其他任何操作都不建议看作是原子性的。因为即使当前版本golang中的实现是原子的，不代表以后某一天不会被改成非原子的 :)
