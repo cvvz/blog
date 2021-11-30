@@ -30,7 +30,7 @@ tags: ["code", "golang"]
 
 1. golang的slice在append时，如果没有超出cap大小，那么是不会重新分配内存的，这时数据是直接append到底层的数组中的。如果两个线程并发的append同一个slice，那么就可能写同一片内存，这样可能会导致append后的总数不符合预期（变少）。这种情况我们也要用锁，这是语言运行时实现层面对程序员的约束。
 
-2. golang的map被设计为非并发安全的（[原因](https://go.dev/doc/faq#atomic_maps)），在应用层如果并发时不加读锁或者写锁，就可能会报错，`fatal error: concurrent map read and map write`。我们可以通过[golang race detector](https://go.dev/doc/articles/race_detector)进行检查。那为什么map的读写需要加锁呢（不管是由应用程序加，还是由语言特性加）？原因在于map类型的一次读写不是原子性的（需要进行哈希计算、解决哈希冲突等等）。**注意这里所说的原子性，不是指上面说的应用层的原子性；而是语言运行时实现层面对程序员的约束。**
+2. golang的map被设计为非并发安全的（[原因](https://go.dev/doc/faq#atomic_maps)），在应用层如果并发时不加读锁或者写锁，就可能会报错，`fatal error: concurrent map read and map write`。我们可以通过[golang race detector](https://go.dev/doc/articles/race_detector)进行检查。那为什么map的读写需要加锁呢（不管是由应用程序加，还是由语言特性加）？原因在于map类型的一次读写不是原子性的（需要进行哈希计算、解决哈希冲突等等），并且map底层的数据结构非常复杂，一次写操作可能涉及到多个数据结构的调整，并发读写可能造成读数据不正确（**是写的过程中的中间数据，不是脏读**）。**注意这里所说的原子性，不是指上面说的应用层的原子性；而是语言运行时实现层面对程序员的约束。**
 
 3. 还有一种是在语言实现时就设计为并非原子性赋值的，可以看看这篇文章中的[讨论](https://cloud.tencent.com/developer/article/1810536)，典型的有复数类型。
 
