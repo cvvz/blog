@@ -35,7 +35,7 @@ C数组访问越界会造成“踩内存”。
 
 ### hash表
 
-> 高级语言内置了hash表，比如Java 中的 HashMap，golang中的map数据类型。
+> 高级语言内置了hash表，比如Java 中的 HashMap，golang中的map数据类型（Go 只提供了最基础的 hash map）。
 
 1. hash表来源于**数组**，借助**散列函数**对数组这种数据结构进行扩展，也就是将key映射为数组下标index。
 
