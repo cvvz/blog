@@ -35,7 +35,9 @@ C数组访问越界会造成“踩内存”。
 
 ### hash表
 
-> 高级语言内置了hash表，比如Java 中的 HashMap，golang中的map数据类型（Go 只提供了最基础的 hash map）。
+高级语言内置了hash表，比如Java 中的 HashMap，golang中的map数据类型。
+
+> Java 中还有 SortedMap（用的比较多是 TreeMap）和 LinkedHashMap ，前者是可以按 key 进行排序的，后者则可以保持键值对的插入顺序，而这两者都是 JDK 自带的，任何一个 Javaer 应该都使用过。但是在 Go 语言的“简约设计”面前，这些都是不存在的——Go 只提供了最基础的 hash map。并且，在借助 range 关键字对 Go 的 map 进行遍历访问的时候，会对 map 的 key 的顺序做随机化处理，也就是说即使是同一个 map 在同一个程序里进行两次相同的遍历，前后两轮访问 key 的顺序也是随机化的。(可以在[这里](https://go.dev/play/p/LYJSbQBjWa6)进行验证)
 
 1. hash表来源于**数组**，借助**散列函数**对数组这种数据结构进行扩展，也就是将key映射为数组下标index。
 
