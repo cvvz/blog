@@ -14,24 +14,24 @@ autoCollapseToc: false
 apiserver为客户端提供三种认证方式：
 
 1. https**双向**认证（注意是双向认证，例如kubeconfig文件中既要配置客户端证书和私钥，又要配置CA证书）
-2. http token认证（例如serviceaccount对应的secret中，包含token文件、ca证书，容器就是通过这两个文件和apiserver进行http token认证的）
+2. http token认证（例如serviceaccount对应的secret中，包含token文件、ca证书，容器就是通过这两个文件和apiserver进行http token认证的）
 3. http base认证（用户名+密码）
 
 ## admission webhook和扩展apiserver
 
-对于这两种情形，**apiserver是作为客户端**，admission webhook和扩展apiserver作为服务端。
+对于这两种情形，**apiserver是作为客户端**，admission webhook和扩展apiserver作为服务端。
 
 ### apiserver通过HTTPS连接admission webhook
 
-当apiserver作为客户端连接admission webhook时，要求admission webhook必须提供https安全认证，但是默认是**单向**认证即可。**也就是admission webhook负责提供服务端证书供apiserver进行验证，但webhook默认可以不验证apiserver**。apiserver所需要的CA证书在webhookconfiguration文件中的`caBundle`字段中进行配置。如果不配置，则默认使用apiserver自己的CA证书。
+当apiserver作为客户端连接admission webhook时，要求admission webhook必须提供https安全认证，但是默认是**单向**认证即可。**也就是admission webhook负责提供服务端证书供apiserver进行验证，但webhook默认可以不验证apiserver**。apiserver所需要的CA证书在webhookconfiguration文件中的`caBundle`字段中进行配置。如果不配置，则默认使用apiserver自己的CA证书。
 
 我们可以自己签发webhook的证书，如`istio`项目中使用的[脚本](https://github.com/istio/istio/blob/release-0.7/install/kubernetes/webhook-create-signed-cert.sh)，或者像`openkruise`项目一样[在controller中生成证书](https://github.com/openkruise/kruise/blob/master/pkg/webhook/util/controller/webhook_controller.go#L262)，当然也可以使用cert-manager自动生成和管理证书。
 
 ### admission webhook验证apiserver
 
-如果你的admission webhook想要验证客户端（也就是apiserver），那么就需要额外给apiserver提供一个配置文件，这个配置文件的内容和kubeconfig很像，可以指定apisever使用http base认证、http token或者证书来向webhook提供身份证明，具体过程详见[官方文档](https://kubernetes.io/zh/docs/reference/access-authn-authz/extensible-admission-controllers/#authenticate-apiservers)。
+如果你的admission webhook想要验证客户端（也就是apiserver），那么就需要额外给apiserver提供一个配置文件，这个配置文件的内容和kubeconfig很像，可以指定apisever使用http base认证、http token或者证书来向webhook提供身份证明，具体过程详见[官方文档](https://kubernetes.io/zh/docs/reference/access-authn-authz/extensible-admission-controllers/#authenticate-apiservers)。
 
-简单来讲就是：在启动 apiserver时，通过`--admission-control-config-file` 这个参数指定了客户端认证的配置文件，这个文件的格式和用 kubectl 连接 apiserver 时用到的 `kubeconfig` 格式几乎一样。只不过这里，客户端是apiserver，服务端是admission webhook。
+简单来讲就是：在启动 apiserver时，通过`--admission-control-config-file` 这个参数指定了客户端认证的配置文件，这个文件的格式和用 kubectl 连接 apiserver 时用到的 `kubeconfig` 格式几乎一样。只不过这里，客户端是apiserver，服务端是admission webhook。
 
 通过这种方式验证客户端，最麻烦的地方是需要手工维护kubeconfig，且对于每个webhook都需要维护一个。
 
@@ -41,7 +41,7 @@ aggregated apiserver在设计之初就解决了客户端认证的问题，具体
 
 ## 以扩展apiserver的方式部署admission webhook
 
-openshift 的 [generic-admission-server库](https://github.com/openshift/generic-admission-server#generic-admission-server) 是一种用来编写admission webhook的lib库，它声称**使用它可以避免apiserver为每一个admission webhook维护一个kubeconfig。（不过我觉得它最大的好处是可以不部署服务端证书，这是通过正常方式部署admission webhook时所办不到的）**。我们来看下它是如何实现的。
+openshift 的 [generic-admission-server库](https://github.com/openshift/generic-admission-server#generic-admission-server) 是一种用来编写admission webhook的lib库，它声称**使用它可以避免apiserver为每一个admission webhook维护一个kubeconfig。（不过我觉得它最大的好处是可以不部署服务端证书，这是通过正常方式部署admission webhook时所办不到的）**。我们来看下它是如何实现的。
 
 1. 在(Validating/Mutating)WebhookConfiguration中，配置admission webhook为kubernetes服务：
 
@@ -72,7 +72,7 @@ openshift 的 [generic-admission-server库](https://github.com/openshift/generic
 
 1. apiserver过滤指定的请求，**将它发到自己的路径下**。
 
-2. 由aggregator转发到扩展apiserver，也就是真正的admission webhook进行处理。
+2. 由aggregator转发到扩展apiserver，也就是真正的admission webhook进行处理。
 
 这样就省去了为apiserver配置和维护kubeconfig文件的步骤。
 

@@ -9,11 +9,11 @@ toc: true
 autoCollapseToc: false
 ---
 
-最近在玩admission webhook时，发现一个奇怪的现象：我配置了validatingWebhookConfiguration使其监听pod的删除操作，结果发现每次删除Pod的时候，webhook会收到三次delete请求：
+最近在玩admission webhook时，发现一个奇怪的现象：我配置了validatingWebhookConfiguration使其监听pod的删除操作，结果发现每次删除Pod的时候，webhook会收到三次delete请求：
 
 {{< figure src="/3-delete.png" width="1000px" >}}
 
-从日志打印上可以分析出，第一次删除请求来自于kubectl客户端，后面两次来自于pod所在的node节点。为什么会收到三次delete请求呢？
+从日志打印上可以分析出，第一次删除请求来自于kubectl客户端，后面两次来自于pod所在的node节点。为什么会收到三次delete请求呢？
 
 ## 删除一个Pod的过程
 
@@ -184,7 +184,7 @@ func (m *kubeGenericRuntimeManager) killContainer(pod *v1.Pod, containerID kubec
 
 ### statusManager发送删除请求
 
-kubelet以goroutine的方式运行着一个`statusManager`，它的作用就是周期性的监听Pod的状态变化，然后执行`func (m *manager) syncPod(uid types.UID, status versionedPodStatus) {`。在`syncPod`中，注意到有如下的逻辑：
+kubelet以goroutine的方式运行着一个`statusManager`，它的作用就是周期性的监听Pod的状态变化，然后执行`func (m *manager) syncPod(uid types.UID, status versionedPodStatus) {`。在`syncPod`中，注意到有如下的逻辑：
 
 ```go
 func (m *manager) syncPod(uid types.UID, status versionedPodStatus) {

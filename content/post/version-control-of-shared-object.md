@@ -17,7 +17,7 @@ tags: []
 
 ## so name
 
-在介绍版本控制前，需要先了解动态链接库的三种name：`real name`、`soname`、`link name`。
+在介绍版本控制前，需要先了解动态链接库的三种name：`real name`、`soname`、`link name`。
 
 * **link name**：`libxxx.so`称为动态链接库的`link name`。
 * **real name**：实际编译出来的动态链接库是具有版本号后缀的，如`libxxx.so.x.y.z`，称为动态链接库的`real name`。
@@ -58,5 +58,5 @@ readelf -d libtest.so.1.0.0 | grep soname
 
 ## 升级动态库
 
-1. 小版本升级，比如从`libtest.so.1.0.0`升级为`libtest.so.1.1.1`。这个时候，按照约定它的soname`libtest.so.1`是不变的，所以使用者可以直接把新版本so丢到机器上，执行`ldconfig`，新生成的`libtest.so.1`就变成了指向`libtest.so.1.1.1`的软连接。小版本升级是后向兼容的，所以这里直接进行升级是没有问题的。
+1. 小版本升级，比如从`libtest.so.1.0.0`升级为`libtest.so.1.1.1`。这个时候，按照约定它的soname`libtest.so.1`是不变的，所以使用者可以直接把新版本so丢到机器上，执行`ldconfig`，新生成的`libtest.so.1`就变成了指向`libtest.so.1.1.1`的软连接。小版本升级是后向兼容的，所以这里直接进行升级是没有问题的。
 2. 主版本升级，比如从`libtest.so.1.1.1`升级为`libtest.so.2.0.0`。这个时候，按照约定它的soname变成了`libtest.so.2`，此时`ldconfig`生成的软连接为`libtest.so.2`，指向`libtest.so.2.0.0`。一般主版本升级会有后向兼容性问题，但是由于使用了新的soname，因此对使用老版本so的程序没有影响。

@@ -33,4 +33,4 @@ autoCollapseToc: false
 
 接下来网上搜索`smtp VRFY disallowed`相关内容就能找到答案了：原来`libcurl`从7.34.0版本开始，要求SMTP客户端显式的设置 `CURLOPT_UPLOAD` 选项，否则libcurl将发送`VRFY`命令。而一般服务器出于安全性的考虑，会禁止执行VRFY命令。（参考[https://issues.dlang.org/show_bug.cgi?id=13042](https://issues.dlang.org/show_bug.cgi?id=13042) ）
 
-> 通过抓包还证实了，不进行加密通信的应用层数据是明文传输的，smtp协议中的用户名密码被一览无余。
+> 通过抓包还证实了，不进行加密通信的应用层数据是明文传输的，smtp协议中的用户名密码被一览无余。

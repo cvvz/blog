@@ -37,7 +37,7 @@ docker run -v /home:/test ...
 
 3. 调用 `pivot_root` 或 `chroot`，改变容器进程的根目录。至此，容器再也看不到宿主机的文件系统目录了。
 
-## kubelet挂载卷的过程
+## kubelet挂载卷的过程
 
 当一个Pod被调度到一个节点上之后，kubelet首先为这个Pod在宿主机上创建一个Volume目录：
 
@@ -81,9 +81,9 @@ hostPath类型的挂载方式，和宿主机上的Volume目录没啥关系，就
 
 在Pod中，如果想使用持久化的存储，如上面提到的远程块存储、NFS存储，或是本地块存储（非hostPath），则在volumes字段中，定义`persistentVolumeClaim`，即PVC。
 
-PVC和PV进行绑定的过程，由`Volume Controller`中的`PersistentVolumeController`这个控制循环负责。所谓“绑定”，也就是填写PVC中的`spec.volumeName`字段而已。`PersistentVolumeController`只会将StorageClass相同的PVC和PV绑定起来。
+PVC和PV进行绑定的过程，由`Volume Controller`中的`PersistentVolumeController`这个控制循环负责。所谓“绑定”，也就是填写PVC中的`spec.volumeName`字段而已。`PersistentVolumeController`只会将StorageClass相同的PVC和PV绑定起来。
 
-StorageClass主要用来动态分配存储(Dynamic Provisioning)。StorageClass中的`provisioner`字段用于指定使用哪种[存储插件](https://kubernetes.io/docs/concepts/storage/storage-classes/#provisioner)进行动态分配，当然，前提是你要在kubernetes中装好对应的存储插件。`parameters`字段就是生成出来的PV的参数。
+StorageClass主要用来动态分配存储(Dynamic Provisioning)。StorageClass中的`provisioner`字段用于指定使用哪种[存储插件](https://kubernetes.io/docs/concepts/storage/storage-classes/#provisioner)进行动态分配，当然，前提是你要在kubernetes中装好对应的存储插件。`parameters`字段就是生成出来的PV的参数。
 
 > `PersistentVolumeController`只是在找不到对应的PV资源和PVC进行绑定时，借助StorageClass生成了一个PV这个API对象。具体这个PV是怎么成为主机volume目录下的一个子目录的，则是靠前面所述的Attach + Mount两阶段处理后的结果。当然如果是NFS或本地持久化卷，就不需要`Volume Controller`进行Attach操作了。
 
@@ -106,4 +106,4 @@ PVC和PV进行绑定的过程，由`Volume Controller`中的`PersistentVolumeCon
 >
 > Q：删除一个被Pod使用中的PVC/PV时，kubectl会卡住，为什么？
 >
-> A：PVC和PV中定义了`kubernetes.io/pvc-protection`、`kubernetes.io/pv-protection`这个finalizer字段，删除时，资源不会被apiserver立即删除，要等到`volume controller`进行**pre-delete**操作后，将finalizer字段删掉，才会被实际删除。而`volume controller`的**pre-delete**操作实际上就是检查PVC/PV有没有被Pod使用。
+> A：PVC和PV中定义了`kubernetes.io/pvc-protection`、`kubernetes.io/pv-protection`这个finalizer字段，删除时，资源不会被apiserver立即删除，要等到`volume controller`进行**pre-delete**操作后，将finalizer字段删掉，才会被实际删除。而`volume controller`的**pre-delete**操作实际上就是检查PVC/PV有没有被Pod使用。

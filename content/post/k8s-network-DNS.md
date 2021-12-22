@@ -11,7 +11,7 @@ tags: ["kubernetes", "DNS"]
 
 ## 默认DNS策略
 
-Pod默认的[dns策略](https://kubernetes.io/zh/docs/concepts/services-networking/dns-pod-service/#pod-s-dns-policy)是 `ClusterFirst`，意思是先通过kubernetes的**权威DNS服务器**（如CoreDNS）直接解析出A记录或CNAME记录；如果解析失败，再根据配置，将其转发给**上游DNS服务器**。以CoreDNS为例，它的配置文件Corefile如下所示：
+Pod默认的[dns策略](https://kubernetes.io/zh/docs/concepts/services-networking/dns-pod-service/#pod-s-dns-policy)是 `ClusterFirst`，意思是先通过kubernetes的**权威DNS服务器**（如CoreDNS）直接解析出A记录或CNAME记录；如果解析失败，再根据配置，将其转发给**上游DNS服务器**。以CoreDNS为例，它的配置文件Corefile如下所示：
 
 ```shell
 ➜  ~ kubectl get cm -n kube-system coredns -o yaml
@@ -103,7 +103,7 @@ Name:	kubernetes.default.svc.cluster.local
 Address: 192.168.0.1
 ```
 
-Headless Service的域名解析稍微复杂一点。
+Headless Service的域名解析稍微复杂一点。
 
 > ClusterIP可以看作是Service的头，而Headless Service，顾名思义也就是指定他的ClusterIP为None的Service。
 

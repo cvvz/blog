@@ -28,7 +28,7 @@ autoCollapseToc: false
 以Docker为例，在bridge模式下：
 
 - Docker Daemon第一次启动时会创建`docker0`网桥；
-- 在创建容器时，会创建一个veth pair，即veth设备对。
+- 在创建容器时，会创建一个veth pair，即veth设备对。
 
 veth pair有两个端点：
 

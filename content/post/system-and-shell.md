@@ -26,13 +26,13 @@ tags: ["Linux"]
 在学习《UNIX环境高级编程（第3版）》信号一章时，根据图10-27所示，执行 `system("/bin/ed")` 命令后，会分别调用`fork`/`exec`系统调用两次：
 
 1. 第一次发生在调用`system`时，父进程`fork`一次，子进程执行`execl("/bin/sh","sh","-c","/bin/ed",(char *)0)`一次，子进程被替换为`/bin/sh`。
-2. 第二次发生在`/bin/sh`这个子进程中，`/bin/sh`会先`fork`一个子进程，这个子进程执行`exec("/bin/ed")`，用`/bin/ed`替换`/bin/sh`。
+2. 第二次发生在`/bin/sh`这个子进程中，`/bin/sh`会先`fork`一个子进程，这个子进程执行`exec("/bin/ed")`，用`/bin/ed`替换`/bin/sh`。
 
 但是我在自己做实验时，用`strace`命令跟踪系统调用的过程，发现`system`系统调用执行过程中，**只`fork`了一次，`exec`了两次，主要的差异在于`/bin/sh`并没有`fork`子进程，而是直接执行了`exec("/bin/ed")`**。
 
 ### 实验二
 
-我在shell下执行`sh -c "sleep 5"&`命令，根据书中的示例，执行`ps -f`后应该可以看到4个进程：
+我在shell下执行`sh -c "sleep 5"&`命令，根据书中的示例，执行`ps -f`后应该可以看到4个进程：
 
 * `ps -f`
 * 当前shell进程
@@ -51,7 +51,7 @@ PID PPID CMD
 103012 48673 ps -o pid,ppid,cmd
 ```
 
-## system的返回值到底是多少？
+## system的返回值到底是多少？
 
 使用如下程序对system的返回值进行实验：
 

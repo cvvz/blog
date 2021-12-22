@@ -30,7 +30,7 @@ kubernetes   10.20.126.169:6443,10.28.116.8:6443,10.28.126.199:6443   348d
 ```
 
 1. 首先数据包从容器中被路由到cni网桥，出现在宿主机网络栈中。
-2. Netfilter在`PREROUTING`链中处理该数据包，最终会将其转到`KUBE-SERVICES`链上进行处理：
+2. Netfilter在`PREROUTING`链中处理该数据包，最终会将其转到`KUBE-SERVICES`链上进行处理：
 ```shell
 -A PREROUTING -m comment --comment "kubernetes service portals" -j KUBE-SERVICES
 ```
@@ -38,7 +38,7 @@ kubernetes   10.20.126.169:6443,10.28.116.8:6443,10.28.126.199:6443   348d
 ```shell
 -A KUBE-SERVICES -d 192.168.0.1/32 -p tcp -m comment --comment "default/kubernetes:https cluster IP" -m tcp --dport 443 -j KUBE-SVC-NPX46M4PTMTKRN6Y
 ```
-4. `KUBE-SVC-NPX46M4PTMTKRN6Y`链以**相等概率**将数据包跳转到`KUBE-SEP-A66XJ5Q22M6AZV5X`、`KUBE-SEP-TYGT5TFZZ2W5DK4V`或`KUBE-SEP-KQD4HGXQYU3ORDNS`链进行处理：
+4. `KUBE-SVC-NPX46M4PTMTKRN6Y`链以**相等概率**将数据包跳转到`KUBE-SEP-A66XJ5Q22M6AZV5X`、`KUBE-SEP-TYGT5TFZZ2W5DK4V`或`KUBE-SEP-KQD4HGXQYU3ORDNS`链进行处理：
 ```shell
 -A KUBE-SVC-NPX46M4PTMTKRN6Y -m statistic --mode random --probability 0.33332999982 -j KUBE-SEP-A66XJ5Q22M6AZV5X
 -A KUBE-SVC-NPX46M4PTMTKRN6Y -m statistic --mode random --probability 0.50000000000 -j KUBE-SEP-TYGT5TFZZ2W5DK4V
@@ -72,7 +72,7 @@ kube-prox 253942 root   12u  IPv6 1852002168      0t0  TCP *:31849 (LISTEN)
 ```shell
 -A KUBE-SERVICES -m comment --comment "kubernetes service nodeports; NOTE: this must be the last rule in this chain" -m addrtype --dst-type LOCAL -j KUBE-NODEPORTS
 ```
-3. 先跳到`KUBE-MARK-MASQ`链打上**特殊记号`0x4000/0x4000`**，这个特殊记号**后续在`POSTROUTING`链中进行SNAT时用到**。
+3. 先跳到`KUBE-MARK-MASQ`链打上**特殊记号`0x4000/0x4000`**，这个特殊记号**后续在`POSTROUTING`链中进行SNAT时用到**。
 ```shell
 -A KUBE-NODEPORTS -p tcp -m comment --comment "default/webapp:" -m tcp --dport 31849 -j KUBE-MARK-MASQ
 
@@ -87,7 +87,7 @@ kube-prox 253942 root   12u  IPv6 1852002168      0t0  TCP *:31849 (LISTEN)
 ```shell
 -A KUBE-POSTROUTING -m comment --comment "kubernetes service traffic requiring SNAT" -m mark --mark 0x4000/0x4000 -j MASQUERADE
 ```
-这条规则的意思就是：带有`0x4000/0x4000`这个特殊标记的数据包在离开节点之前，在`POSTROUTING`链上进行一次SNAT，即`MASQUERADE`。而这个特殊标记，如前所述，是在外部客户端数据流入节点时打上去的。
+这条规则的意思就是：带有`0x4000/0x4000`这个特殊标记的数据包在离开节点之前，在`POSTROUTING`链上进行一次SNAT，即`MASQUERADE`。而这个特殊标记，如前所述，是在外部客户端数据流入节点时打上去的。
 
 ## 总结
 
@@ -112,7 +112,7 @@ kube-prox 253942 root   12u  IPv6 1852002168      0t0  TCP *:31849 (LISTEN)
 
 ## kube-proxy的IPVS模式
 
-上述流程描述的是kube-proxy的iptables模式的工作流程，这个模式最大的问题在于：
+上述流程描述的是kube-proxy的iptables模式的工作流程，这个模式最大的问题在于：
 
 * kube-proxy需要为service配置大量的iptables规则，并且刷新这些规则以确保正确性；
 * iptables的规则是以链表的形式保存的，对iptables的刷新需要遍历链表

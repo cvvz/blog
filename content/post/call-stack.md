@@ -167,7 +167,7 @@ Dump of assembler code for function main:
 End of assembler dump.
 ```
 
-查看此时栈帧指针和栈顶指针的值：
+查看此时栈帧指针和栈顶指针的值：
 
 ```armasm
 (gdb) i r r11 sp
@@ -181,7 +181,7 @@ __libc_start_main + 276 in section .text of /lib/arm-linux-gnueabihf/libc.so.6
 
 可以看到，栈帧指针指向的返回地址是`__libc_start_main + 276`，即**main函数是由__libc_start_main调用的**。
 
-由前面分析得知，栈帧指针-4地址处存放的是上一个函数的栈帧指针，于是我们继续向上追溯`__libc_start_main`的调用者地址，可以发现其值为0：
+由前面分析得知，栈帧指针-4地址处存放的是上一个函数的栈帧指针，于是我们继续向上追溯`__libc_start_main`的调用者地址，可以发现其值为0：
 
 ```armasm
 (gdb) x /xw 0x7efffaec-4

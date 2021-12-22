@@ -38,7 +38,7 @@ tags: ["kubernetes","CNI","容器"]
 
 所谓underlay，也就是没有在宿主机网络上的虚拟层，容器和宿主机处于同一个网络层面上。
 
-> 在这种情形下，Kubernetes 内外网络是互通的，运行在kubernetes中的容器可以很方便的和公司内部已有的非云原生基础设施进行联动，比如DNS、负载均衡、配置中心等，而不需要借助kubernetes内部的DNS、ingress和service做服务发现和负载均衡。
+> 在这种情形下，Kubernetes 内外网络是互通的，运行在kubernetes中的容器可以很方便的和公司内部已有的非云原生基础设施进行联动，比如DNS、负载均衡、配置中心等，而不需要借助kubernetes内部的DNS、ingress和service做服务发现和负载均衡。
 
 所谓overlay，其实就是在容器的IP包外面附加额外的数据包头，然后**整体作为宿主机网络报文中的数据进行传输**。容器的IP包加上额外的数据包头就用于跨主机的容器之间通信，**容器网络就相当于覆盖(overlay)在宿主机网络上的一层虚拟网络**。如下图所示：
 
@@ -64,14 +64,14 @@ tags: ["kubernetes","CNI","容器"]
 
   Flannel VXLAN模式的原理和UDP模式差不多，区别在于：
   
-  1. UDP模式创建的是TUN设备(flannel0)，VXLAN模式创建的是VTEP设备（flannel.1）。
+  1. UDP模式创建的是TUN设备(flannel0)，VXLAN模式创建的是VTEP设备（flannel.1）。
   2. VTEP设备全程工作在内核态，性能比UDP模式更好。
   
   VXLAN模式的工作流程：
 
   1. container-1根据默认路由规则，将IP包发往cni网桥，出现在宿主机的网络栈上；
   2. flanneld预先在宿主机上创建好了路由规则，数据包到达cni网桥后，随即被转发给了flannel.1，flannel.1是一个VTEP设备，**它既有 IP 地址，也有 MAC 地址**；
-  3. **在node2上的目的VTEP设备启动时，node1上的flanneld会将目的VTEP设备的IP地址和MAC地址分别写到node1上的路由表和ARP缓存表中**。
+  3. **在node2上的目的VTEP设备启动时，node1上的flanneld会将目的VTEP设备的IP地址和MAC地址分别写到node1上的路由表和ARP缓存表中**。
   4. 因此，node1上的flannel.1通过查询路由表，知道要发往目的容器，需要经过10.1.16.0这个网关。**其实这个网关，就是目的VTEP设备的ip地址**。
   ```shell
   $ route -n
@@ -80,7 +80,7 @@ tags: ["kubernetes","CNI","容器"]
   ...
   10.1.16.0       10.1.16.0       255.255.255.0   UG    0      0        0 flannel.1
   ```
-  5. 又由于**这个网关的MAC地址，事先已经被flanneld写到了ARP缓存表中**，所以内核直接把目的VTEP设备的MAC地址封装到链路层的帧头即可：
+  5. 又由于**这个网关的MAC地址，事先已经被flanneld写到了ARP缓存表中**，所以内核直接把目的VTEP设备的MAC地址封装到链路层的帧头即可：
   {{< figure src="/flannel-vxlan-frame.jpg" width="500px">}}
   6. **flanneld还负责维护FDB（转发数据库）中的信息**，查询FDB，就可以通过这个目的VTEP设备的MAC地址找到宿主机Node2的ip地址。
   7. 有了目的IP地址，接下来进行一次常规的、宿主机网络上的封包即可。

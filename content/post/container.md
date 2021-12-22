@@ -88,7 +88,7 @@ cpu cgroup能限制cpu的使用率，但是cpu cgroup并没有办法解决平均
 
 ### cpuset cgroup
 
-cpuset cgroup用于进程绑核，主要通过设置`cpuset.cpus`和`cpuset.mems`两个字段来实现。
+cpuset cgroup用于进程绑核，主要通过设置`cpuset.cpus`和`cpuset.mems`两个字段来实现。
 
 在kubernetes中，当 Pod 属于 Guaranteed QoS 类型，并且 requests 值与 limits 被设置为同一个相等的**整数值**就相当于声明Pod中的容器要进行绑核。
 
@@ -107,7 +107,7 @@ cpuset cgroup用于进程绑核，主要通过设置`cpuset.cpus`和`cpuset.mem
 >
 > Q：执行 `kubectl top` 命令获取到的pod指标是从哪里来的？
 >
-> A：整个执行路径是：`kubectl -> apiserver -> aggregated-apiserver -> metric-server -> kubelet(cAdvisor) -> cgroup`。最终来源就是cgroup。而Linux `top`命令的指标数据的来源是`/proc`文件系统。
+> A：整个执行路径是：`kubectl -> apiserver -> aggregated-apiserver -> metric-server -> kubelet(cAdvisor) -> cgroup`。最终来源就是cgroup。而Linux `top`命令的指标数据的来源是`/proc`文件系统。
 
 ## kubelet、Docker、CRI、OCI
 
@@ -123,14 +123,11 @@ kubelet和docker的集成方案：
 
 `kubelet -> dockershim -> docker daemon -> containerd -> containerd-shim -> runc -> container`
 
-dockershim实现了[CRI](https://github.com/kubernetes/kubernetes/blob/8327e433590f9e867b1e31a4dc32316685695729/pkg/kubelet/apis/cri/services.go)定义的gRPC接口，实现方式就是充当docker daemon的客户端，向docker daemon发送命令。实际上dockershim和docker daemon都可以被干掉，[kubernetes在v1.20也的确这么做了](https://github.com/kubernetes/kubernetes/blob/master/CHANGELOG/CHANGELOG-1.20.md#deprecation)。docker从kubernetes中被移除后，我们可以直接使用[containerd](https://github.com/containerd/containerd)或[CRI-O](https://github.com/cri-o/cri-o)作为CRI。
+dockershim实现了[CRI](https://github.com/kubernetes/kubernetes/blob/8327e433590f9e867b1e31a4dc32316685695729/pkg/kubelet/apis/cri/services.go)定义的gRPC接口，实现方式就是充当docker daemon的客户端，向docker daemon发送命令。实际上dockershim和docker daemon都可以被干掉，[kubernetes在v1.20也的确这么做了](https://github.com/kubernetes/kubernetes/blob/master/CHANGELOG/CHANGELOG-1.20.md#deprecation)。docker从kubernetes中被移除后，我们可以直接使用[containerd](https://github.com/containerd/containerd)或[CRI-O](https://github.com/cri-o/cri-o)作为CRI。
 
 [runC](https://github.com/opencontainers/runc)则是一个[OCI](https://github.com/opencontainers/runtime-spec)的参考实现，底层通过Linux系统调用为容器设置 namespaces 和 cgroups, 挂载 rootfs。当然kubernetes其实不关心OCI的底层是怎么实现的，只要能保证遵循OCI文档里的标准，就能自己实现一个OCI。[Kata](https://github.com/kata-containers/kata-containers)就是遵循了OCI标准实现的安全容器。它的底层是用虚拟机实现的资源强隔离，而不是namespace。
 
 Kata中的VM可以和Pod做一个类比：
 
 * kubelet调用CRI的`RunPodSandbox`接口时，如果是runC实现的OCI，则会去创建`infra`容器，并执行`/pause`将容器挂起；如果是Kata，则会去创建一个虚拟机。
-* 接着kubelet调用`CreateContainer`去创建容器，对于runC，就是创建容器进程并将他们的namespace加入`infra`容器中去；对于Kata，则是往VM中添加容器。
-
-
-
+* 接着kubelet调用`CreateContainer`去创建容器，对于runC，就是创建容器进程并将他们的namespace加入`infra`容器中去；对于Kata，则是往VM中添加容器。
