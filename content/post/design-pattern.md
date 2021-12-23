@@ -107,7 +107,7 @@ tags: ["golang", "coding"]
 
 4. 不要在函数中使用布尔类型的标识参数来控制内部逻辑，true 的时候走这块逻辑，false 的时候走另一块逻辑。
 
-## 设计模式(基于golang)
+## golang设计模式
 
 > 创建型：主要解决“对象的创建”问题
 >
@@ -120,5 +120,8 @@ tags: ["golang", "coding"]
    * [工厂](https://github.com/cvvz/go-design-pattern/tree/master/golang/factory)
    * [建造者](https://github.com/cvvz/go-design-pattern/tree/master/golang/builder)
 2. 结构型
-   * [装饰器/Functional Option](https://github.com/cvvz/go-design-pattern/tree/master/golang/decorator)
 3. 行为型
+
+## 拓展：golang常用编程模式
+
+* [Functional Option](https://github.com/cvvz/go-design-pattern/tree/master/golang/decorator)
