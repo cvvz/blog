@@ -104,6 +104,7 @@ tags: ["code", "golang"]
 2. [数据流的中位数](https://leetcode-cn.com/problems/find-median-from-data-stream/)、99线问题
 3. TopK问题
    1. [静态topK](https://leetcode-cn.com/problems/kth-largest-element-in-an-array/)（从上往下堆化）
+      > 对于静态topK问题，如果数据量能够直接加载进内存，那么用快速排序思想求解会更快（O(n)）；堆排序会比快排更省内存，不过要一直读磁盘/网络，构造流数据，即动态topK
    2. [动态topK](https://leetcode-cn.com/problems/kth-largest-element-in-a-stream/)（从下往上堆化）
 
 ### 图
