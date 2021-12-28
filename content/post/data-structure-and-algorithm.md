@@ -83,18 +83,18 @@ tags: ["code", "golang"]
 
 #### [堆](https://leetcode-cn.com/tag/heap-priority-queue/problemset/)
 
-> **堆通常用完全二叉树实现。完全二叉树又可以用数组实现，因此堆也可以用数组实现。**
+> **堆通常用完全二叉树实现 -> 完全二叉树又可以用数组实现 -> 因此堆也可以用数组实现。**
 
 **堆的核心操作：**
 
 0. 核心中的核心：堆化（heapify）
-   1. **从上往下**
-   2. **从下往上**
-1. 交换堆顶和堆尾，并进行从上往下堆化
-2. 插入堆尾，并进行从下往上堆化
+   1. **[从上往下](https://cs.opensource.google/go/go/+/refs/tags/go1.17.5:src/container/heap/heap.go;l=101-119)**
+   2. **[从下往上](https://cs.opensource.google/go/go/+/refs/tags/go1.17.5:src/container/heap/heap.go;l=90-99)**
+1. 替换堆顶元素，然后从上往下堆化
+2. 向堆中增加元素时，[Push到堆尾](https://cs.opensource.google/go/go/+/refs/tags/go1.17.5:src/container/heap/heap.go;l=50-55)，并进行从下往上堆化
 3. 建堆
-   1. 从上往下堆化
-   2. 从下往上堆化
+   1. [从上往下堆化](https://cs.opensource.google/go/go/+/refs/tags/go1.17.5:src/container/heap/heap.go;l=42-48)
+   2. 从下往上堆化，即一个个[Push到堆尾](https://cs.opensource.google/go/go/+/refs/tags/go1.17.5:src/container/heap/heap.go;l=50-55)，并从下往上调整
 
 [**堆的应用**](https://time.geekbang.org/column/article/70187):
 
@@ -135,13 +135,17 @@ tags: ["code", "golang"]
 > 归并排序是stable的，所以**golang的[sort.Stable](https://github.com/golang/go/blob/master/src/sort/sort.go#L378-L404)使用归并排序实现**。
 
 **快速排序**：选择一个pivot，然后“**从上往下**”不断进行**原地的**partition操作，由于partition是原地的，因此空间复杂度为O(1)。
-
+   > **快速排序的关键是原地partition**
 因为快速排序优化了内存使用，所以应用比归并排序要广泛。但是快速排序在最坏情况下的时间复杂度是 O(n2)，**需要解决这个“复杂度恶化”的问题**。这个问题的根因还是我们选择的分区点（pivot）不合理导致的，理想的分区点应该是左右两边的数据量差不多，最好能二分，这样递归的层次就最少。pivot的选择方法最常见的有两种：
 
 1. 三数取中法：选择三个或者更多的数，选择他们的中间值作为pivot。
 2. 随机法：从概率上说不会一直选的都是最差的点作为pivot。
 
-**归并排序**和**快速排序**都用到了**分治**思想。我们可以借鉴快排的思想，来解决非排序的问题，比如[静态topK](https://leetcode-cn.com/problems/kth-largest-element-in-an-array/)问题。
+**归并排序**和**快速排序**都用到了**分治**思想。
+
+我们可以借鉴快排的思想，来解决非排序的问题，比如用O(n)的时间复杂度解决[静态topK](https://leetcode-cn.com/problems/kth-largest-element-in-an-array/)问题。
+
+> 事实上面试中快排相关的考点就是求一个数组中的第K大元素。**注意是第K大，而不是前K大。前K大需要借助堆排序。**
 
 **堆排序**：步骤分为
 
