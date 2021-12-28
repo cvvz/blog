@@ -103,9 +103,9 @@ tags: ["code", "golang"]
    2. 定时器
 2. [数据流的中位数](https://leetcode-cn.com/problems/find-median-from-data-stream/)、99线问题
 3. TopK问题
-   1. [静态topK](https://leetcode-cn.com/problems/kth-largest-element-in-an-array/)（从上往下堆化）
-      > 对于静态topK问题，如果数据量能够直接加载进内存，那么用快速排序思想求解会更快（O(n)）；堆排序会比快排更省内存，不过要一直读磁盘/网络，构造流数据，即动态topK
-   2. [动态topK](https://leetcode-cn.com/problems/kth-largest-element-in-a-stream/)（从下往上堆化）
+   1. [静态topK](https://leetcode-cn.com/problems/kth-largest-element-in-an-array/)
+      > 对于静态topK中的**找出第K大元素**的问题，如果数据量能够直接加载进内存，那么用快速排序思想求解会更快（O(n)）；堆排序会比快排更省内存，不过要一直读磁盘/网络，构造流数据，即动态topK
+   2. [动态topK](https://leetcode-cn.com/problems/kth-largest-element-in-a-stream/)
 
 ### 图
 
@@ -152,9 +152,9 @@ tags: ["code", "golang"]
 1. 建堆：堆化
    1. 方法一：**从第一个非叶子结点开始**，依次执行从上往下堆化
    2. 方法二：不断插入尾部，并对新插入节点执行从下往上堆化
-2. 调整：不断交换堆顶和堆尾元素 + 重新堆化
+2. 调整：不断交换堆顶和堆尾元素 + 重新堆化（从上往下）
 
-> **注意，在做堆排序时，由于调整这一步是从上往下堆化，所以建堆时最好用方法一，这样heapify函数才能复用。**
+> **注意，在做堆排序时，由于调整这一步是从上往下堆化，所以建堆时应该用方法一，这样heapify函数才能复用。参考[heapSort](https://cs.opensource.google/go/go/+/refs/tags/go1.17.5:src/sort/sort.go;l=66-81)**
 
 ### 搜索
 
