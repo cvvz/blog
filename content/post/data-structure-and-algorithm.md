@@ -33,7 +33,7 @@ tags: ["code", "golang"]
 
 递归的算法都可以用栈来实现。
 
-> 高性能定时器，除了可以用堆实现（**比如golang的timer就是用最小四叉堆**），还可以用**环形队列**，详见 [时间轮算法 HashedWheelTimer](https://zhuanlan.zhihu.com/p/65835110)、[http://russellluo.com/2018/10/golang-implementation-of-hierarchical-timing-wheels.html](层级时间轮的 Golang 实现)
+> 高性能定时器，除了可以用堆实现（**比如golang的timer就是用最小四叉堆**），还可以用**环形队列**，详见 [时间轮算法 HashedWheelTimer](https://zhuanlan.zhihu.com/p/65835110) 、[层级时间轮的 Golang 实现](http://russellluo.com/2018/10/golang-implementation-of-hierarchical-timing-wheels.html)
 
 ### hash表
 
