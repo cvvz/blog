@@ -13,9 +13,9 @@ tags: ["kubernetes"]
 
 集群联邦是为了解决单k8s集群节点数量有限的问题而出现的多集群管理方案。更具体一点，集群联邦要解决三类问题：
 
-1. 多k8s集群管理。这一块对应有社区的[cluster-registry（已归档）](https://github.com/kubernetes-retired/cluster-registry)项目和[cluster-api](https://github.com/kubernetes-sigs/cluster-api)项目
-2. 多集群workload管理。[A Model For Multicluster Workloads (In Kubernetes And Beyond)](https://timewitch.net/post/2020-03-31-multicluster-workloads/) 这篇文章提出了一种多集群workload的模型，现在的集群联邦的应用管理框架基本上都符合该模型。
-3. 多集群service。社区里有 [Multi-Cluster Services API](https://github.com/kubernetes/enhancements/tree/master/keps/sig-multicluster/1645-multi-cluster-services-api) 的KEP，OCM中有相应的实现。
+1. **多k8s集群管理**。这一块对应有社区的[cluster-registry（已归档）](https://github.com/kubernetes-retired/cluster-registry)项目和[cluster-api](https://github.com/kubernetes-sigs/cluster-api)项目
+2. **多集群workload管理**。[A Model For Multicluster Workloads (In Kubernetes And Beyond)](https://timewitch.net/post/2020-03-31-multicluster-workloads/) 这篇文章提出了一种多集群workload的模型，现在的集群联邦的应用管理框架基本上都符合该模型。
+3. **多集群service（服务暴露和服务发现）**。社区里有 [Multi-Cluster Services API](https://github.com/kubernetes/enhancements/tree/master/keps/sig-multicluster/1645-multi-cluster-services-api) 的KEP，OCM中有相应的实现。
 
 ## [KubeFed v2](https://github.com/kubernetes-sigs/kubefed)
 
