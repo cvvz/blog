@@ -36,13 +36,14 @@ workload管理：
 ## [Karmada](https://github.com/karmada-io/karmada)
 
 {{< figure src="/karmada.png" width="450px" >}}
-{{< figure src="/karmada-resource-relation.png" width="450px" >}}
 
-Karmada最大的特色是**整个控制平面是一个部署在k8s中的定制化的k8s（k8s-on-k8s），包括etcd**。底层的这个k8s唯一的作用就是部署karmada的k8s元集群，karmada只对外暴露元集群apiserver的API。
+Karmada最大的特色是**整个控制平面是一个部署在k8s中的定制化的k8s（k8s-on-k8s），包括etcd**。底层的这个k8s唯一的作用就是部署karmada的k8s元集群，karmada只对外暴露元集群apiserver的API（图中`karmada apiserver`）。
 
-**Karmada的k8s原集群中的controller组件，通过启动flag限制了很多内置控制器的运行，最典型的例如不启动replicaset/deployment控制器**。而Karmada的controller则会watch replicaset/deployment等k8s原生资源，这样，用户在创建一个deployment时，实际是karmada controller对其进行reconcile，reconcile的逻辑自然是将workload分发到成员集群中去。
+**Karmada的k8s原集群中的controller组件，通过启动flag限制了很多内置控制器的运行，最典型的例如不启动replicaset/deployment控制器**。而Karmada的controller（图中`Karmada controllers`）则会watch replicaset/deployment等k8s原生资源，这样，用户在创建一个deployment时，实际是karmada controller对其进行reconcile，reconcile的逻辑自然是将workload分发到成员集群中去。
 
 Karmada的支持Push和Pull两种模式分发workload：push模式下由Karmada控制器将应用推送到成员集群，Pull模式下由运行在成员集群侧的Karmada Agent控制器将应用下拉到本地。
+
+{{< figure src="/karmada-resource-relation.png" width="450px" >}}
 
 Karmada借鉴了KubeFed的很多设计思想。Karmada将KubeFed中定义在同一个`Federated Type`中的`Template`、`placement`、`overrides`拆分成了3个单独的对象：原生资源（图中`Resource Template`）、资源传播策略（图中`propagation policy`）、单集群差异化配置策略（图中`override policy`）。
 
@@ -76,7 +77,7 @@ workload管理：
 1. 定义调度策略：首先在中央集群中创建`placement`对象，其中定义了`predicate`和`priority`规则；控制器会自动创建出`PlacementDecision`对象，调度结果会存放在`PlacementDecision`中。
 2. 资源部署：需要创建`ManifestWork`对象，这个对象里定义了manifests字段，即资源模板。对应的cluster上的agent watch到了`ManifestWork`，会在自己的集群内创建对应的资源。并且会将状态同步到中央集群中的`ManifestWork` status字段。
 
-OCM旨在提供一个精简的多集群/多应用管理的内核，不会去定义面向用户的接口部分，而是希望提供能力，使得其他面向最终用户的接口实现可以很轻易的集成进来，也就是说**OCM不像其他集群联邦产品那样可以开箱即用**。
+**OCM旨在提供一个精简的多集群/多应用管理的内核，不会去定义面向用户的接口部分，而是希望提供下层能力，使得其他面向最终用户的接口实现可以很轻易的集成进来，换句话说OCM不像其他集群联邦产品那样可以开箱即用**。
 
 OCM 和 kubernetes 开源社区结合的比较的密切：
 
