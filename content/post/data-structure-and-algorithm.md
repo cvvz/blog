@@ -100,6 +100,7 @@ tags: ["code", "golang"]
 1. 优先级队列
    1. 合并有序小文件
    2. 定时器
+   > 思考：为啥堆又叫做优先级队列？**看起来堆似乎是一个二叉树，和队列不是同一个数据结构。但是实际上堆是一个完全二叉树，而完全二叉树通常用数组表示，所以堆也是用数组来存储的。而队列也是用数组存储的**。
 2. [数据流的中位数](https://leetcode-cn.com/problems/find-median-from-data-stream/)、99线问题
 3. TopK问题
    1. [静态topK](https://leetcode-cn.com/problems/kth-largest-element-in-an-array/)
