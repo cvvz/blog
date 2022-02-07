@@ -19,13 +19,17 @@ apiserver为客户端提供三种认证方式：
 
 ## admission webhook和扩展apiserver
 
-对于这两种情形，**apiserver是作为客户端**，admission webhook和扩展apiserver作为服务端。
+> 对于admission webhook和扩展apiserver而言，**apiserver可以简单的看作是客户端**，admission webhook和扩展apiserver则作为服务端。
 
 ### apiserver通过HTTPS连接admission webhook
 
 当apiserver作为客户端连接admission webhook时，要求admission webhook必须提供https安全认证，但是默认是**单向**认证即可。**也就是admission webhook负责提供服务端证书供apiserver进行验证，但webhook默认可以不验证apiserver**。apiserver所需要的CA证书在webhookconfiguration文件中的`caBundle`字段中进行配置。如果不配置，则默认使用apiserver自己的CA证书。
 
-我们可以自己签发webhook的证书，如`istio`项目中使用的[脚本](https://github.com/istio/istio/blob/release-0.7/install/kubernetes/webhook-create-signed-cert.sh)，或者像`openkruise`项目一样[在controller中生成证书](https://github.com/openkruise/kruise/blob/master/pkg/webhook/util/controller/webhook_controller.go#L262)，当然也可以使用cert-manager自动生成和管理证书。
+管理服务端证书的方式有三种：
+
+* 我们可以自己签发webhook的证书，如 `istio` 项目中使用的[脚本](https://github.com/istio/istio/blob/release-0.7/install/kubernetes/webhook-create-signed-cert.sh)
+* 像`openkruise`项目一样[在controller中自动生成证书](https://github.com/openkruise/kruise/blob/master/pkg/webhook/util/controller/webhook_controller.go#L262)
+* 使用开源的[cert-manager](https://github.com/cert-manager/cert-manager)自动生成和管理证书
 
 ### admission webhook验证apiserver
 
@@ -41,9 +45,9 @@ aggregated apiserver在设计之初就解决了客户端认证的问题，具体
 
 ## 以扩展apiserver的方式部署admission webhook
 
-openshift 的 [generic-admission-server库](https://github.com/openshift/generic-admission-server#generic-admission-server) 是一种用来编写admission webhook的lib库，它声称**使用它可以避免apiserver为每一个admission webhook维护一个kubeconfig。（不过我觉得它最大的好处是可以不部署服务端证书，这是通过正常方式部署admission webhook时所办不到的）**。我们来看下它是如何实现的。
+openshift 的 [generic-admission-server库](https://github.com/openshift/generic-admission-server#generic-admission-server) 是一种用来编写admission webhook的lib库，使用它可以**避免人工创建和维护客户端key和证书的复杂性（即上面提到的apiserver的kubeconfig文件）。不过我觉得它更大的好处是同时也省去了创建和维护服务端证书的步骤，使得开发人员可以更加专注于webhook的功能本身，安全性相关的功能借由kubernetes的聚合层apiserver的双向认证机制自动完成**，这是通过常规方式部署admission webhook时所办不到的。我们来看下它的原理是怎样的：
 
-1. 在(Validating/Mutating)WebhookConfiguration中，配置admission webhook为kubernetes服务：
+1. 首先在 WebhookConfiguration 中，配置admission webhook为kubernetes服务，即apiserver自己，并设置path为一个特殊的group、version，**这一步相当于是apiserver把请求转发给了自己**。
 
     ```yaml
     webhooks:
@@ -55,7 +59,7 @@ openshift 的 [generic-admission-server库](https://github.com/openshift/generic
           port: 443
     ```
 
-2. 在ApiService中，配置group、version，以及admission webhook的service：
+2. 在 ApiService 中，配置聚合api的group、version，以及后端的service：
 
     ```yaml
     spec:
@@ -72,8 +76,6 @@ openshift 的 [generic-admission-server库](https://github.com/openshift/generic
 
 1. apiserver过滤指定的请求，**将它发到自己的路径下**。
 
-2. 由aggregator转发到扩展apiserver，也就是真正的admission webhook进行处理。
+2. 再由aggregator转发到扩展apiserver，也就是真正的admission webhook进行处理。
 
-这样就省去了为apiserver配置和维护kubeconfig文件的步骤。
-
-**并且还有一个额外的“好处”是，可以设置apiservice配置文件中的 `spec.insecureSkipTLSVerify`字段为true，这样连服务端证书都可以偷懒省去了：）**
+**使用聚合apiserver还有一个额外的好处：可以设置apiservice中的 `spec.insecureSkipTLSVerify`字段为true，使用不安全的连接，这样在测试环境调试时任何证书都不需要了**
