@@ -51,7 +51,7 @@ tags: ["code", "golang"]
 
 方法就是**把对map的写入操作变成新map的替换**，由于map替换本身可以看成是进行一次指针赋值，而指针赋值在golang中是原子性的，所以就不会存在map并发问题。
 
-典型代码可以查看[煎鱼](https://github.com/Terry-Mao)的[这段代码](https://github.com/Terry-Mao/gopush-cluster/blob/master/rpc/rand_lb.go#L221-L232)
+典型代码可以查看[毛剑](https://github.com/Terry-Mao)的[这段代码](https://github.com/Terry-Mao/gopush-cluster/blob/master/rpc/rand_lb.go#L221-L232)
 
 > 但是这段代码也引起了一些[争议](https://github.com/Terry-Mao/gopush-cluster/issues/44)，主要争议在于golang的指针赋值到底是不是原子的。关于这个问题，可以看看[这个问答](https://stackoverflow.com/questions/21447463/is-assigning-a-pointer-atomic-in-go)，简单来说就是，除了 `sync.atomic` 中的操作以外，其他任何操作都不建议看作是原子性的。因为即使当前版本golang中的实现是原子的，不代表以后某一天不会被改成非原子的。
 >
