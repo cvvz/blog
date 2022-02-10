@@ -9,6 +9,10 @@ keywords: ["code", "golang"]
 tags: ["code", "golang"]
 ---
 
+> [我的题库](https://github.com/cvvz/go-algorithm)
+>
+> [我的leetcode](https://leetcode-cn.com/u/cvz)
+
 ## 常见数据结构
 
 ### 数组
@@ -16,8 +20,6 @@ tags: ["code", "golang"]
 数组的时间效率很高，但是空间效率很低，而且不安全，比如访问越界造成踩内存。
 
 很多高级语言都基于基础的数组实现了**动态数组**，比如Java中的ArrayList、C++ STL中的vector和golang中的slice，动态数组的优势在于可以动态扩容，使用起来很方便，**在实现算法时更加handy**。但是由于封装了额外的数据迁移等操作，时间效率上不如数组高。
-
-🌟**技巧：使用双指针求两数之和**
 
 ### 链表
 
@@ -55,15 +57,13 @@ tags: ["code", "golang"]
 
 ### hash算法
 
-**hash算法在hash表中的应用就是散列函数。**
+hash算法的应用：
 
-[在分布式系统中的应用](https://time.geekbang.org/column/article/67388)：
-
-1. 负载均衡
-2. 数据分片
-3. 分布式存储（**一致性哈希**）
-
-> 取模似乎是用的最多的一种哈希算法。MD5、SHA256等哈希算法，一般会用在把一个大的二进制文件转换为一个唯一的二进制数值。
+* **hash表中的散列函数。**
+* [在分布式系统中的应用](https://time.geekbang.org/column/article/67388)：
+  1. 负载均衡（**一致性哈希**）
+  2. 数据分片等
+* 加密、验证，比如go mod使用go.sum文件来验证依赖库是否发生变化
 
 ### 树
 
@@ -73,49 +73,48 @@ tags: ["code", "golang"]
   * 广度优先搜索：层序遍历
   * 深度优先搜索：前中后序遍历。
    > **“前中后”指的是当前节点和左右子树谁先打印**
-  * 🌟深度搜索可以用栈或者递归，递归算法实现起来很简单，广度搜索只能用队列。🌟
-* 完全二叉树和满二叉树：可以用**数组存储**
-   > **堆通常用完全二叉树实现。完全二叉树又可以用数组实现，因此堆也可以用数组实现。**
-* 二叉查找树：**和有序数组的二分查找类比记忆**
-   > **中序遍历二叉搜索树可以得到一个有序数组**
-* 平衡二叉查找树：二叉查找树在频繁的动态更新过程中，可能会出现树的高度远大于 log2n 的情况，从而导致各个操作的效率下降。**极端情况下，二叉树会退化为链表**，时间复杂度会退化到 O(n)。所以又发明了**平衡二叉查找树**。
+   >
+   > 深度搜索可以用栈或者递归，递归算法实现起来很简单；广度搜索只能用队列。
+* 完全二叉树和满二叉树：
+   > **完全二叉树可以用数组实现，而堆是一个完全二叉树，因此堆是用数组实现的**
+* 二叉查找树：
+   > **中序遍历二叉查找树可以得到一个有序数组，和有序数组的二分查类似**
+* 平衡二叉查找树：二叉查找树在频繁的动态更新过程中，可能会出现树的高度远大于 log2n 的情况，从而导致各个操作的效率下降。**极端情况下，会退化为链表**，时间复杂度会退化到 O(n)。所以又发明了**平衡二叉查找树**。
     > “平衡”的意思，其实就是让整棵树左右看起来比较“对称”、比较“平衡”，不要出现左子树很高、右子树很矮的情况。这样就能让整棵树的高度相对来说低一些，相应的插入、删除、查找等操作的效率高一些。
-* **红黑树是一种平衡二叉查找树**。它是为了解决普通二叉查找树在数据更新的过程中，复杂度退化的问题而产生的。**Java中的TreeMap可以对哈希表的key进行排序，底层就用到了红黑树**。
+* 红黑树：**红黑树是一种平衡二叉查找树**。它是为了解决普通二叉查找树在数据更新的过程中，复杂度退化的问题而产生的。
+    > **Java中的TreeMap可以对哈希表的key进行排序，底层就用到了红黑树**。
 
-#### [堆](https://leetcode-cn.com/tag/heap-priority-queue/problemset/)
+#### [堆/优先级队列](https://leetcode-cn.com/tag/heap-priority-queue/problemset/)
 
-> **堆通常用完全二叉树实现 -> 完全二叉树又可以用数组实现 -> 因此堆也可以用数组实现。**
+> 思考：为啥堆又叫做优先级队列？**看起来堆似乎是一个树，而队列是数组。但是实际上堆是一个完全二叉树，而完全二叉树通常用数组表示，所以堆也是用数组来存储的**。
 
 **堆的核心操作：**
 
-0. 核心中的核心：堆化（heapify）
+1. 核心中的核心：堆化（heapify）
    1. **从上往下[down](https://cs.opensource.google/go/go/+/refs/tags/go1.17.5:src/container/heap/heap.go;l=101-119)**
    2. **从下往上[up](https://cs.opensource.google/go/go/+/refs/tags/go1.17.5:src/container/heap/heap.go;l=90-99)**
-1. 替换堆顶元素，然后从上往下堆化：[Pop](https://cs.opensource.google/go/go/+/refs/tags/go1.17.5:src/container/heap/heap.go;l=57-65)
-2. 向堆尾添加元素：[Push](https://cs.opensource.google/go/go/+/refs/tags/go1.17.5:src/container/heap/heap.go;l=50-55)，并进行从下往上堆化
-3. 建堆：[Init](https://cs.opensource.google/go/go/+/refs/tags/go1.17.5:src/container/heap/heap.go;l=42-48)
+2. 替换堆顶元素，然后从上往下堆化：[Pop](https://cs.opensource.google/go/go/+/refs/tags/go1.17.5:src/container/heap/heap.go;l=57-65)
+3. 向堆尾添加元素：[Push](https://cs.opensource.google/go/go/+/refs/tags/go1.17.5:src/container/heap/heap.go;l=50-55)，并进行从下往上堆化
+4. 建堆：[Init](https://cs.opensource.google/go/go/+/refs/tags/go1.17.5:src/container/heap/heap.go;l=42-48)
 
 [**堆的应用**](https://time.geekbang.org/column/article/70187):
 
-1. 优先级队列
-   1. 合并有序小文件
-   2. 定时器
-   > 思考：为啥堆又叫做优先级队列？**看起来堆似乎是一个二叉树，和队列不是同一个数据结构。但是实际上堆是一个完全二叉树，而完全二叉树通常用数组表示，所以堆也是用数组来存储的。而队列也是用数组存储的**。
+1. 高性能定时器
+   > golang官方库Timer的实现，和informer中的延迟队列的实现都用到了堆
 2. [数据流的中位数](https://leetcode-cn.com/problems/find-median-from-data-stream/)、99线问题
 3. TopK问题
    1. [静态topK](https://leetcode-cn.com/problems/kth-largest-element-in-an-array/)
-      > 对于静态topK中的**找出第K大元素**的问题，如果数据量能够直接加载进内存，那么用快速排序思想求解会更快（O(n)）；堆排序会比快排更省内存，不过要一直读磁盘/网络，构造流数据，即动态topK
    2. [动态topK](https://leetcode-cn.com/problems/kth-largest-element-in-a-stream/)
+   > **对于静态topK的问题，如果数据量能够直接加载进内存，那么用快速排序思想求解会更快**
+   >
+   > **但对于动态topK的问题，就只能使用堆来解决了，因为要通过网络/磁盘IO构造流数据**
 
 ### 图
-
-**有向无环图（DAG）的[拓扑排序](https://leetcode-cn.com/tag/topological-sort/problemset/)**
 
 **数据结构（存储方法）**：邻接矩阵（二位数组） 和 邻接表
 
 * **邻接矩阵**
-  > **一般图的BFS、DFS、拓扑排序算法，以邻接矩阵（数组）的形式考察的比较的多；而二叉树的BFS、DFS则是以链表的形式考察。BFS要用到队列，DFS要用到栈。**
-  > 🌟深度搜索可以用栈或者递归，递归算法实现起来很简单，广度搜索只能用队列。🌟
+  > **一般图的BFS、DFS，有向无环图（DAG）拓扑排序算法，以邻接矩阵（二维数组）的形式考察的比较的多。而树型结构（链表）一般用二叉树的BFS和DFS来考察。**
 * 邻接表
 
 ## 常见算法
@@ -141,34 +140,23 @@ tags: ["code", "golang"]
 
 我们可以借鉴快排的思想，来解决非排序的问题，比如用O(n)的时间复杂度解决[静态topK](https://leetcode-cn.com/problems/kth-largest-element-in-an-array/)问题。
 
-> 事实上面试中快排相关的考点就是求一个数组中的第K大元素。**注意是第K大，而不是前K大。前K大需要借助堆排序。**
+**堆排序**：[heapSort](https://cs.opensource.google/go/go/+/refs/tags/go1.17.5:src/sort/sort.go;l=66-81)
 
-**堆排序**：步骤分为
+1. 建堆：
+   1. 方法一：**从第一个非叶子结点开始**，依次执行从上往下堆化，即[Init](https://cs.opensource.google/go/go/+/refs/tags/go1.17.5:src/container/heap/heap.go;l=42-48)
+   2. 方法二：不断入队，并对新入队节点执行从下往上堆化，即[Push](https://cs.opensource.google/go/go/+/refs/tags/go1.17.5:src/container/heap/heap.go;l=50-55)
+2. 调整：交换堆顶和堆尾元素，堆尾元素出队，从上往下重新堆化，即[Pop](https://cs.opensource.google/go/go/+/refs/tags/go1.17.5:src/container/heap/heap.go;l=57-65)
 
-1. 建堆：堆化
-   1. 方法一：**从第一个非叶子结点开始**，依次执行从上往下堆化
-   2. 方法二：不断插入尾部，并对新插入节点执行从下往上堆化
-2. 调整：不断交换堆顶和堆尾元素 + 重新堆化（从上往下）
-
-> **注意，在做堆排序时，由于调整这一步是从上往下堆化，所以建堆时应该用方法一，这样heapify函数才能复用。参考[heapSort](https://cs.opensource.google/go/go/+/refs/tags/go1.17.5:src/sort/sort.go;l=66-81)**
-
-### 搜索算法
+### 搜索
 
 **广度优先搜索和深度优先搜索**在算法面试中都是非常有用的工具，也就是说**掌握BFS和DFS是基础要求**，很多时候**使用任意一种**搜索算法就能解决某些与图相关的面试题。
-**🌟深度搜索可以用栈或者递归，递归算法实现起来很简单，广度搜索只能用队列。🌟**
 
 如果面试题要求在无权图中找出两个节点之间的最短距离，那么广度优先搜索可能是更合适的算法。
 如果面试题要求找出符合条件的路径，那么深度优先搜索可能是更合适的算法。
 
 ### 二分查找
 
-二分查找的**三个容易出错的地方**：
-
-* 循环退出条件
-* mid 的取值可能越界
-* low 和 high 的更新。
-
-二分查找可以用递归实现。
+比较简单
 
 ## 基本算法思想
 
@@ -178,17 +166,15 @@ tags: ["code", "golang"]
 
 ### [分治](https://leetcode-cn.com/tag/divide-and-conquer/problemset/)
 
-> 分治算法一般都是用递归来实现的。分治是一种解决问题的处理思想，递归是一种编程技巧，这两者并不冲突。
->
 > 分治经常用在海量数据处理的场景下，内存无法直接装载全部数据，就将数据分批装载进内存处理，再将结果进行合并。（给1TB的订单排序）
 >
 > **要判断清楚数据规模是不是可以直接装载进内存**，比如获取10亿个整数第k大的数：10亿个整数 = 80亿Byte( int=64bit ) ≈（不足）8GB，这个时候要考虑单机的实际可用内存大小是否可以直接装载8GB。如果能直接装进去，那么可以用快排思想做；如果不能直接装进去，那么构造大小为k的堆，然后从文件读数据进行处理。
 > 还有的时候如果文件太大，那么需要进行**数据分片**，分成若干个小文件以后，再分而治之，即逐个处理可以直接载入内存的小文件，最后合并得到结果。
 
-### [动态规划](https://leetcode-cn.com/tag/dynamic-programming/problemset/)
-
-> DP的主要学习难点跟递归类似，那就是，求解问题的过程不太符合人类常规的思维方式。
-
 ### [回溯](https://leetcode-cn.com/tag/backtracking/problemset/)
 
-> DFS利用的就是回溯算法思想。
+> 通常**递归实现**。DFS利用的就是回溯算法思想。
+
+### [动态规划](https://leetcode-cn.com/tag/dynamic-programming/problemset/)
+
+> dp的主要学习难点跟递归类似，那就是，求解问题的过程不太符合人类常规的线性思维方式。
