@@ -5,8 +5,8 @@ draft: false
 comments: true
 toc: true
 autoCollapseToc: false
-keywords: ["code", "golang"]
-tags: ["code", "golang"]
+keywords: ["coding", "golang"]
+tags: ["coding", "golang"]
 ---
 
 > [我的题库](https://github.com/cvvz/go-algorithm)
