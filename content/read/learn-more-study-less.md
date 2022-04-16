@@ -1,5 +1,5 @@
 ---
-title: "《Learn More Study Less》"
+title: "Learn More Study Less"
 date: 2021-10-10T23:19:02+08:00
 draft: false
 comments: true

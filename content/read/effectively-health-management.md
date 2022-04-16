@@ -1,5 +1,5 @@
 ---
-title: "《有效管理你的健康》 张展晖"
+title: "有效管理你的健康"
 date: 2022-02-01T09:33:55+08:00
 draft: false
 comments: true
