@@ -128,7 +128,7 @@ FlexVolume是一种out-of-tree的解决方案，但是依然不够完美。主�
 1. 不需要节点权限，不需要在节点上安装可执行文件
 2. 把公共能力（动态provision、attach等）从k8s主干分支中抽离出来，放在[kubernetes-csi](https://github.com/kubernetes-csi)这个项目中
 
-此外值得注意的是CSI**不是专门为k8s设计的**，可以兼容其他容器编排平台，参考[CSI spec](https://github.com/container-storage-interface/spec/blob/master/spec.md)。
+此外值得注意的是：`The Container Storage Interface (CSI) is a standard for exposing arbitrary block and file storage systems to containerized workloads on Container Orchestration Systems (COs) like Kubernetes.`也就是说CSI是一个标准，除了k8s以外还可以兼容其他容器编排平台，只要按照这个标准进行实现即可，参考[CSI spec](https://github.com/container-storage-interface/spec/blob/master/spec.md)。
 
 CSI本身的运行机制不是本篇的重点，可以参考[kubernetes CSI官方文档](https://kubernetes-csi.github.io/docs/introduction.html)和[设计文档](https://github.com/kubernetes/design-proposals-archive/blob/main/storage/container-storage-interface.md)。比如在设计文档里已经把CSI Driver各个组件的交互过程写的非常清楚了：[Example Walkthrough
 ](https://github.com/kubernetes/design-proposals-archive/blob/main/storage/container-storage-interface.md#example-walkthrough)，无需赘述。
