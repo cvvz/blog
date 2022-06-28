@@ -1,9 +1,10 @@
 ---
 title: "弱传播"
 date: 2022-06-28T08:47:07+08:00
-draft: true
-comments: false
-images:
+draft: false
+comments: true
+toc: false
+autoCollapseToc: false
 ---
 
 一本关于舆论和传播的书。没有读完，看完了80%的内容，认真看了的部分可能只有50%。理论和泛泛而谈的东西太多了，自创了很多概念、定理，八股文风太重，不仅如此，甚至还对定义进行了逻辑推演，我实在不想让自己有限的思考时间陷入文字游戏的漩涡中。
