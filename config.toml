@@ -89,6 +89,11 @@ googleAnalytics = "G-M8Q3DKDEVL"
     weight = 20
 
   [[menu.main]]
+    name = "跑步"
+    url = "running/"
+    weight = 20
+
+  [[menu.main]]
     name = "关于"
     url = "/aboutme/resume.pdf"
     weight = 30
