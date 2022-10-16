@@ -48,7 +48,7 @@ googleAnalytics = "G-M8Q3DKDEVL"
   # images = [""]
   # themeColor = "#494f5c"
 
-  homeSubtitle = "If you give people tools, they'll do wonderful things with them."
+  homeSubtitle = "记录技能，而不是知识。"
   footerCopyright = ' &#183; <a href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank" rel="noopener">CC BY-NC 4.0</a>'
   # bgImg = ""  # Homepage background-image URL
 
@@ -89,11 +89,16 @@ googleAnalytics = "G-M8Q3DKDEVL"
     weight = 20
 
   [[menu.main]]
+    name = "思考"
+    url = "thinking/"
+    weight = 30
+
+  [[menu.main]]
     name = "跑步"
     url = "running/"
-    weight = 30
+    weight = 40
 
   [[menu.main]]
     name = "关于"
     url = "/aboutme/resume.pdf"
-    weight = 40
+    weight = 50
