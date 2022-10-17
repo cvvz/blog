@@ -6,7 +6,7 @@ comments: true
 toc: true
 autoCollapseToc: false
 keywords: []
-tags: []
+tags: ["kubernetes"]
 ---
 ## 问题
 

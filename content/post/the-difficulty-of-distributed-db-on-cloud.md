@@ -6,7 +6,7 @@ comments: true
 toc: true
 autoCollapseToc: false
 keywords: ["kubernetes", "storage"]
-tags: ["kubernetes", "storage"]
+tags: ["kubernetes", "存储"]
 ---
 
 `云原生数据库`、`shared-nothing`、`算存分离`... 这些概念性的东西，网上资料一大把，看完以后感觉懂了，但是尝试用自己的话复述出来时，又感觉没懂。
