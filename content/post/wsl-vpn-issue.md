@@ -11,15 +11,19 @@ tags: ["network", "运维"]
 
 最近由于工作原因，不得不将工作机切换到Windows系统，准备装个WSL作为overlay的工作环境。安装、配置都没什么问题，但是发现主机接了VPN以后，虚拟机没法科学上网了。利用周末时间折腾了一下，在这里记录一下调查和解决问题的过程。
 
-## 环境信息
+## 基本信息
 
 主机：Windows10, OS build: 19044.1889
 
-虚拟机：Ubuntu 20.04
+wsl：Ubuntu 20.04
 
-WSL有1和2两个版本，这两个版本的区别是wsl1以桥接方式加入主机网络，wsl2则有自己的虚拟以太网卡和ip地址，通过NAT的方式访问Internet。主机VPN导致的网络问题在wsl1和wsl2上都存在，但是问题原因不一样，这里分开讨论。
+WSL有1和2两个版本，这两个版本的[区别](https://learn.microsoft.com/en-us/windows/wsl/compare-versions#:~:text=WSL%202%20is%20running,will%20change%20on%20restart.)是wsl1以桥接方式加入主机网络，类似于docker的host网络模式，和宿主机共用同一个network namespace；wsl2则有独立的虚拟以太网卡和ip地址，通过NAT的方式访问Internet。主机VPN导致的网络问题在wsl1和wsl2上都存在，但是问题原因不一样，这里分开讨论。
 
 ## WSL1
+
+### 整体网络环境
+
+{{< figure src="/wsl-vpn/wsl1-network.drawio.svg" width="700px" >}}
 
 ### 主机环境
 
@@ -27,7 +31,7 @@ WSL有1和2两个版本，这两个版本的区别是wsl1以桥接方式加入�
 
 {{< figure src="/wsl-vpn/wsl1-host-devices.png" width="1000px" >}}
 
-图中Ethernet是我的物理网卡（192.168.31.8），连接小米路由器（192.168.31.1），MSFTVPN是VPN的虚拟出来的一块虚拟网卡（100.64.16.6）。
+图中Ethernet是我的物理网卡（192.168.31.8），连接小米路由器（192.168.31.1），MSFTVPN是VP虚拟出来的一块虚拟网卡（100.64.16.6）。
 
 **路由表**
 
@@ -35,12 +39,11 @@ WSL有1和2两个版本，这两个版本的区别是wsl1以桥接方式加入�
 
 值得注意的是路由表开头有两条默认路由规则，内核会选择metric较小的那个作为高优先级的网络接口。(数据流和metric的关系就好像电流和电阻的关系:) )这说明主机流量会强制通过VPN虚拟网卡，无论是访问墙内还是墙外网站。这一点在[官方文档](https://docs.microsoft.com/en-us/windows/security/identity-protection/vpn/vpn-routing#force-tunnel-configuration)中有解释。
 
-### 虚拟机环境
+### wsl环境
 
-在虚拟机内看到的网络设备和路由表和主机几乎相同。说明桥接模式下，两者共处在同一个网络层下。
+在wsl内看到的网络设备和路由表和主机几乎相同。说明wsl1和windows宿主机两者共处在同一个network namespace中。
 
 {{< figure src="/wsl-vpn/wsl1-vm-devices.png" width="700px" >}}
-
 
 ### 问题和排查过程
 
@@ -65,7 +68,7 @@ WSL有1和2两个版本，这两个版本的区别是wsl1以桥接方式加入�
 但是进一步证实了虚拟机中域名解析的报文的确是直接发给了网关：
 {{< figure src="/wsl-vpn/data-capture-vm.png" width="1000px" >}}
 
-后来又想能不能直接抓VPN的这块虚拟网卡呢，这样不就拿到明文数据了吗？结果发现windows上wireshark看不到这块设备，Ubuntu里系统调用支持不全，抓包失败。。
+后来又想能不能直接抓VPN的这块虚拟网卡呢，这样不就拿到明文数据了吗？结果发现windows上wireshark看不到这块设备，而wsl1里系统调用支持不全，抓包失败。。
 
 但是找到了正确的方向解决起来就很快了，在网上查找VPN域名解析相关的内容时找到了这篇[文档](https://docs.microsoft.com/en-us/windows/security/identity-protection/vpn/vpn-name-resolution)，介绍了Windows VPN进行域名解析时，会先去查询[NRPT](https://docs.microsoft.com/en-us/previous-versions/windows/it-pro/windows-server-2008-R2-and-2008/ee649207(v=ws.10))表，我在主机上找到了这张表，其中定义了DNS Server：
 
@@ -77,17 +80,21 @@ WSL有1和2两个版本，这两个版本的区别是wsl1以桥接方式加入�
 
 WSL1升级到WSL2之后，这个网络问题仍然存在，但是原因不同。fyi，这个问题我还没找到根因，暂时还是继续用WSL1。。
 
+### 整体网络环境
+
+{{< figure src="/wsl-vpn/wsl2-network.drawio.svg" width="700px" >}}
+
 ### 主机环境
 
-WSL2中的虚拟机和主机不在同一个网段，虚拟机通过NAT，转换为主机的ip访问外网（使用VPN时，则是转换为VPN的client ip访问VPN server再访问外网，当然实际流量也是搭载在真实物理网络之上）。升级WSL2后，会在主机上多创建一块虚拟网卡172.20.176.1：
+WSL2中的虚拟机和主机不在同一个网段，虚拟机通过NAT，转换为主机的ip访问外网（使用VPN时，则是转换为VPN的client ip访问VPN server再访问外网，当然实际流量也是搭载在真实物理网络之上）。升级WSL2后，在主机上出现了一块名为WSL的虚拟网卡172.20.176.1：
 
 {{< figure src="/wsl-vpn/wsl2-host-devices.png" width="1000px" >}}
 
-### 虚拟机环境
+### wsl环境
 
 {{< figure src="/wsl-vpn/wsl2-vm-devices.png" width="900px" >}}
 
-可以看到，这时虚拟机有自己的网络设备和路由规则。不再像桥接模式那样与宿主机共用网络设备和路由表。在虚拟机中有一块网卡eth0，ip地址为172.20.179.153/20，默认路由通过这个网卡发到宿主机上的虚拟网卡172.20.176.1。
+可以看到，wsl2有自己的网络设备和路由规则。不再像wsl1那样与宿主机共用网络设备和路由表。在虚拟机中有一块网卡eth0，ip地址为172.20.179.153/20，默认路由通过这个网卡发到宿主机上的虚拟网卡172.20.176.1。
 
 ### 问题排查过程
 
