@@ -1,5 +1,9 @@
 #!/bin/sh
 
+git add -u
+git commit -m "add some new changes"
+git push origin master
+
 # If a command fails then the deploy stops
 set -e
 
