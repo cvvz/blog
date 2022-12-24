@@ -120,4 +120,4 @@ WSL2中的虚拟机和主机不在同一个网段，虚拟机通过NAT，转换�
 
 ---
 
-最近在查`apiserver TLS handshake`的问题的时候，找到了这个问题的[解决办法](https://stackoverflow.com/a/71723695)，就是**把WLS2的eth0的MTU调整为和VPN虚拟网卡的MTU一致**，这样数据帧才能正确的encode/decode，比如：`sudo ip link set dev eth0 mtu 1350`。这个方法在这个[issue](https://github.com/microsoft/WSL/issues/4698#issuecomment-628682785)里也有提到。
+最近在查`apiserver TLS handshake timeout`的问题的时候，找到了这个问题的[解决办法](https://stackoverflow.com/a/71723695)，就是**把WLS2的eth0的MTU调整为和VPN虚拟网卡的MTU一致**，这样数据帧才能正确的encode/decode，比如：`sudo ip link set dev eth0 mtu 1350`。这个方法在这个[issue](https://github.com/microsoft/WSL/issues/4698#issuecomment-628682785)里也有提到。
