@@ -89,7 +89,7 @@ googleAnalytics = "G-M8Q3DKDEVL"
     weight = 20
 
   [[menu.main]]
-    name = "思考"
+    name = "想法"
     url = "thinking/"
     weight = 30
 
