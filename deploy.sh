@@ -1,11 +1,19 @@
 #!/bin/sh
 
+set -e
+
+git stash
+git pull origin master
+git stash pop
+
+cd public
+git pull origin master
+cd ..
+
 git add -u
 git commit -m "add some new changes"
 git push origin master
 
-# If a command fails then the deploy stops
-set -e
 
 printf "\033[0;32mDeploying updates to GitHub...\033[0m\n"
 
