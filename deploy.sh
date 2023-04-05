@@ -4,7 +4,7 @@ set -e
 
 git stash
 git pull origin master
-git stash pop
+git stash pop || true
 
 cd public
 git pull origin master
