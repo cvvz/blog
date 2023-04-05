@@ -79,26 +79,26 @@ googleAnalytics = "G-M8Q3DKDEVL"
 [menu]
 
   [[menu.main]]
-    name = "技术"
+    name = "Technology"
     url = "post/"
     weight = 10
 
   [[menu.main]]
-    name = "读书"
+    name = "Reading"
     url = "read/"
     weight = 20
 
   [[menu.main]]
-    name = "想法"
+    name = "Thoughts"
     url = "thinking/"
     weight = 30
 
   [[menu.main]]
-    name = "跑步"
+    name = "Running"
     url = "running/"
     weight = 40
 
   [[menu.main]]
-    name = "关于"
+    name = "AboutMe"
     url = "/aboutme/resume.pdf"
     weight = 50
