@@ -11,7 +11,7 @@ git pull origin master
 cd ..
 
 git add -u
-git commit -m "add some new changes"
+git commit -m "add some new changes" || true
 git push origin master
 
 
