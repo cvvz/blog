@@ -212,7 +212,13 @@ Run Suite
                 
                 {{< figure src="/ginkgo/Untitled 4.png" width="800px" >}}
                 
-                如果可以那么就会给这个interrupt channel发送。如果是Abort的channel，那么如果当前处于cleanup，直接忽略。
+                如果可以那么就会触发这个interrupt channel close。
+                
+                > 这个地方的实现是通过轮询来实现的，状态更新会有500ms的延迟。存在两个问题：
+                > 1. 在运行Serial的Node或者cleanup Node时，会先检查一下状态，再决定是否运行。但是可能当时server端已经设置为需要abort了，可是还需要等500ms才能拿到实际状态。这个时候会去运行Node，但是实际上是应该skip的。
+                > 2. cleanup Node应该直接忽略Abort的channel。
+                > 
+                > 具体可以参考：[https://github.com/onsi/ginkgo/pull/1178](https://github.com/onsi/ginkgo/pull/1178)
                 
             - 收到SIGINT和SIGTERM信号
                 
