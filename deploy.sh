@@ -10,6 +10,8 @@ cd public
 git pull origin master
 cd ..
 
+git add content
+git add static
 git add -u
 git commit -m "add some new changes" || true
 git push origin master
