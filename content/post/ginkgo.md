@@ -13,7 +13,7 @@ tags: []
 
 执行ginkgo cmd默认运行的是ginkgo run
 
-{{< figure src="/ginkgo/Untitled.png" width="800px" >}}
+{{< figure src="/ginkgo/Untitled.png" width="700px" >}}
 
 入口函数
 
@@ -25,11 +25,13 @@ func (r *SpecRunner) RunSpecs(args []string, additionalArgs []string) {
 
 ## 编译
 
-{{< figure src="/ginkgo/Untitled 1.png" width="800px" >}}
+{{< figure src="/ginkgo/Untitled 1.png" width="700px" >}}
 
 使用 `go test -c -o` 得到`.test`可执行文件
 
-要理解怎么编译出.test文件的，就要理解ginkgo是怎么构造specs tree的
+{{< figure src="/ginkgo/gotest.png" width="700px" >}}
+
+要理解.test文件中的测试用例（spec）是怎么执行的，就要理解ginkgo是怎么构造specs tree的
 
 ### 构造specs tree
 
@@ -37,7 +39,7 @@ func (r *SpecRunner) RunSpecs(args []string, additionalArgs []string) {
 
 他们底层都是通过`pushNode`，从外向内一层一层的push Node，然后在`RunSpecs`入口中的`BuildTree`构造出如下的specs tree数据结构：
 
-{{< figure src="/ginkgo/image3.png" width="800px" >}}
+{{< figure src="/ginkgo/image3.png" width="1000px" >}}
 
 ## 运行
 
@@ -49,7 +51,7 @@ func (r *SpecRunner) RunSpecs(args []string, additionalArgs []string) {
 suites[suiteIdx] = internal.RunCompiledSuite(suites[suiteIdx], r.suiteConfig, r.reporterConfig, r.cliConfig, r.goFlagsConfig, additionalArgs)
 ```
 
-每个suite都会编译成一个`.test`，如果有多个test suite，一个一个的运行
+每个suite都会编译成一个`.test`，如果有多个test suite，一个一个的编译运行
 
 如果以parallel的模式运行，则启动server
 
@@ -57,7 +59,7 @@ suites[suiteIdx] = internal.RunCompiledSuite(suites[suiteIdx], r.suiteConfig, r.
 server, err := parallel_support.NewServer(numProcs, reporters.NewDefaultReporter(reporterConfig, formatter.ColorableStdOut))
 ```
 
-生成flag并运行多个.test进程
+生成go test flag，如果运行在parallel模式，启动多个.test进程并发执行测试用例。ginkgo会根据机器的核心数决定启动多少个test进程，每个test进程运行的都是同一组specs，但是test具体运行哪一个spec由ginkgo server决定。
 
 {{< figure src="/ginkgo/Untitled 2.png" width="1000px" >}}
 
@@ -218,7 +220,7 @@ Run Suite
                 > 1. 在运行Serial的Node或者cleanup Node时，会先检查一下状态，再决定是否运行。但是可能当时server端已经设置为需要abort了，可是还需要等500ms才能拿到实际状态。这个时候会去运行Node，但是实际上是应该skip的。
                 > 2. cleanup Node应该直接忽略Abort的channel。
                 > 
-                > 具体可以参考：[https://github.com/onsi/ginkgo/pull/1178](https://github.com/onsi/ginkgo/pull/1178)
+                > 我在提交了一个PR [https://github.com/onsi/ginkgo/pull/1178](https://github.com/onsi/ginkgo/pull/1178) 解决这个问题
                 
             - 收到SIGINT和SIGTERM信号
                 
