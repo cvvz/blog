@@ -79,7 +79,7 @@ googleAnalytics = "G-M8Q3DKDEVL"
 [menu]
 
   [[menu.main]]
-    name = "Technology"
+    name = "Posts"
     url = "post/"
     weight = 10
 
