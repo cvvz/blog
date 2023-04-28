@@ -99,6 +99,6 @@ googleAnalytics = "G-M8Q3DKDEVL"
     weight = 40
 
   [[menu.main]]
-    name = "AboutMe"
+    name = "About Me"
     url = "/aboutme/resume.pdf"
     weight = 50
