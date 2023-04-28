@@ -72,9 +72,13 @@ googleAnalytics = "G-M8Q3DKDEVL"
     name = "github"
     url = "https://github.com/cvvz"
   
-   [[params.social]]
+  [[params.social]]
     name = "email"
     url = "mailto:ftdchenwz@gmail.com"
+  
+  [[params.social]]
+    name = "twitter"
+    url = "https://twitter.com/cvvz717"
 
 [menu]
 
