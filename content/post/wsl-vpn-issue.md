@@ -1,5 +1,5 @@
 ---
-title: "WSL: VPN的网络问题"
+title: "在WSL中使用VPN碰到的网络问题"
 date: 2022-08-22T09:23:12+08:00
 draft: false
 comments: true
