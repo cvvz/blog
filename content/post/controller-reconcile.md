@@ -1,5 +1,5 @@
 ---
-title: "怎么让controller周期性的reconcile"
+title: "informer和controller-runtime源码"
 date: 2021-11-20T14:17:23+08:00
 draft: false
 comments: true
@@ -10,15 +10,15 @@ tags: ["kubernetes"]
 ---
 ## 问题
 
-怎么让controller每隔1分钟进行一次reconcile，而不需要借助任何外部事件触发？
-
 {{< figure src="/informer.jpeg" width="500px" >}}
 
-虽然解决的方法看似很简单，但是知其然还要知其所以然，借着解决这个问题的契机，我们来仔细阅读一下infomer和controller-runtime的源码实现。这才是最重要的部分（当然是对于个人而言😁）
+最近在写operator时，碰到一个场景需要让controller每隔1分钟做一次reconcile，而不需要借助外部事件触发。
+
+虽然`client-go`和`controller-runtime`都提供了很方便的接口进行设置。但是知其然还要知其所以然，借着解决这个问题的契机，仔细阅读了一下`infomer`和`controller-runtime`的代码，搞清楚了底层实现原理。
 
 ## 方法一
 
-创建informerFactory对象时，设置defaultResync参数
+创建`informerFactory`对象时，设置`defaultResync`参数
 
 {{< figure src="/1.png" width=800px" >}}
 
@@ -52,7 +52,7 @@ reflector在进行[ListAndWatch](https://github.com/kubernetes/client-go/blob/10
 
 ## 方法二
 
-通过在Reconcile中，设置返回的Result的RequeueAfter为1分钟：
+使用`controller-runtime`库时，还可以通过在`Reconcile`中，设置返回的`Result.RequeueAfter`为1分钟来实现：
 
 {{< figure src="/5.png" width=700px" >}}
 
@@ -64,15 +64,15 @@ reflector在进行[ListAndWatch](https://github.com/kubernetes/client-go/blob/10
 
     {{< figure src="/6.png" width=700px" >}}
 
-2. Manager启动时会启动所有controller，对于controller，“启动”的含义就是启动多个goroutine循环的从workqueue中取key，然后执行Reconcile，顺着Manager.Start一层层的找到[Controller的Start入口](https://github.com/kubernetes-sigs/controller-runtime/blob/master/pkg/internal/controller/controller.go#L148)，最终可以看到熟悉的 processNextWorkItem：
+2. Manager启动时会启动所有controller，对于controller，“启动”的含义就是启动多个goroutine循环的从workqueue中取key，然后执行Reconcile，顺着Manager.Start一层层的找到[Controller的Start入口](https://github.com/kubernetes-sigs/controller-runtime/blob/master/pkg/internal/controller/controller.go#L148)，最终可以看到熟悉的 `processNextWorkItem`：
 
     {{< figure src="/7.png" width=700px" >}}
 
-    processNextWorkItem的逻辑当然就是从workqueue里取key，然后执行Reconcile的业务逻辑：
+    `processNextWorkItem`的逻辑当然就是从workqueue里取key，然后执行Reconcile的业务逻辑：
 
     {{< figure src="/8.png" width=700px" >}}
 
-3. 可以看到当result.RequeueAfter > 0时，执行了c.Queue.Forget(obj)和c.Queue.AddAfter(req, result.RequeueAfter)，分别是什么意思呢？要搞清楚这一点，首先我们要弄清楚workqueue的实现。
+3. 可以看到当`result.RequeueAfter > 0`时，执行了`c.Queue.Forget(obj)`和`c.Queue.AddAfter(req, result.RequeueAfter)`，分别是什么意思呢？要搞清楚这一点，首先我们要弄清楚workqueue的实现。
 
 ### workqueue
 
@@ -86,7 +86,7 @@ reflector在进行[ListAndWatch](https://github.com/kubernetes/client-go/blob/10
 
 ### AddAfter
 
-AddAfter是延迟队列提供的方法，它向waitingForAddCh这个channel中传入了一个构造的waitFor对象
+`AddAfter`是延迟队列提供的方法，它向`waitingForAddCh`这个channel中传入了一个构造的`waitFor`对象
 
 {{< figure src="/11.png" width=700px" >}}
 
@@ -94,7 +94,7 @@ AddAfter是延迟队列提供的方法，它向waitingForAddCh这个channel中�
 
 {{< figure src="/12.png" width=700px" >}}
 
-在这个goroutine中，收到waitFor对象后，如果还没到执行时间，则会插入优先级队列中（**可以看到，高性能定时器一般用堆实现**）
+在这个goroutine中，收到`waitFor`对象后，如果还没到执行时间，则会插入优先级队列中（**可以看到，高性能定时器一般用堆实现**）
 
 {{< figure src="/13.png" width=700px" >}}
 
@@ -104,18 +104,20 @@ AddAfter是延迟队列提供的方法，它向waitingForAddCh这个channel中�
 
 ### Forget
 
-在看Forget方法前，先看限速队列中我们最常用的AddRateLimited方法，一般这个方法会在我们Reconcile失败的时候进行调用，目的就是以某种限定的速率重新入队workqueue，从而达到限制重试速度的目的：
+在看Forget方法前，先看限速队列中我们最常用的`AddRateLimited`方法，一般这个方法会在我们Reconcile失败的时候进行调用，目的就是以某种限定的速率重新入队workqueue，从而达到限制重试速度的目的：
 
 {{< figure src="/15.png" width=700px" >}}
 
-可以看到其实就是调用延迟队列的AddAfter方法，只是AddAfter的方法的参数不是固定的时间，而是由限速器说了算
+可以看到其实就是调用延迟队列的`AddAfter`方法，只是`AddAfter`的方法的参数不是固定的时间，而是由ratelimiter计算得到
 
 [workqueue](https://github.com/kubernetes/client-go/blob/10e087ca394e2987f09e759438f9949a746c1ca0/util/workqueue/default_rate_limiters.go)包中提供的默认限速器是**指数退避限速器 + 令牌桶限速器**：
 
 {{< figure src="/16.png" width=700px" >}}
 
-Forget是限速器提供的方法，其实就是把失败的对象从限速器中移除，这样限速器就不会再根据该对象的失败次数对其进行限速计算了
+`Forget`是ratelimiter提供的方法，其实就是把失败的对象从ratelimiter中移除，这样ratelimiter就不会再根据该对象的失败次数对其进行限速计算了
 
 {{< figure src="/17.png" width=700px" >}}
 
-因此，再Reconcile执行成功后，**需要调用Forget将对象（也就是字符串namespace/name）从限速器中移除**，否则会重复入队workqueue一次并且会影响后续限速器对于相同key的限速计算。
+因此，在Reconcile执行成功后，**需要调用Forget将对象（也就是字符串namespace/name）从限速器中移除**，否则会重复入队workqueue一次并且会影响后续限速器对于相同key的限速计算。
+
+回到最开始的问题，当设置`result.RequeueAfter`为1min时，会调用`c.Queue.Forget(obj)`和`c.Queue.AddAfter(req, result.RequeueAfter)`，也就是说1分钟之后会再次入队，触发reconciliation。
