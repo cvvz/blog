@@ -1,7 +1,7 @@
 ---
 title: "k8s storage 生命周期全流程"
 date: 2023-08-17T15:13:22+08:00
-draft: true
+draft: false
 comments: true
 toc: true
 autoCollapseToc: false
