@@ -10,6 +10,9 @@ tags: []
 ---
 
 ## Mental Model
+
+> 很喜欢心智模型这个词，意思是对一个事物建立一个整体的框架性的理解。
+
 1. Prometheus的[配置文件](https://prometheus.io/docs/prometheus/latest/configuration/configuration/)中，[scrape_config](https://prometheus.io/docs/prometheus/latest/configuration/configuration/#scrape_config) 部分定义的是[job](https://prometheus.io/docs/concepts/jobs_instances/#jobs-and-instances) —— 也就是去哪个target [instance](https://prometheus.io/docs/concepts/jobs_instances/#jobs-and-instances) scrape metrics —— 但是**配置文件里不关心也没法关心具体抓哪些指标**。
 
 2. 具体有哪些指标可以抓，也就是 **[metrics name + label](https://prometheus.io/docs/concepts/data_model/#metric-names-and-labels) 和 [metrics type](https://prometheus.io/docs/concepts/metric_types/)，都在客户端源代码中定义**。

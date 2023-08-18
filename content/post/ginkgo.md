@@ -1,5 +1,5 @@
 ---
-title: "Ginkgo源码"
+title: "Ginkgo源码分析"
 date: 2023-04-05T08:56:03+08:00
 draft: false
 comments: true
@@ -220,7 +220,7 @@ Run Suite
                 > 1. 在运行Serial的Node或者cleanup Node时，会先检查一下状态，再决定是否运行。但是可能当时server端已经设置为需要abort了，可是还需要等500ms才能拿到实际状态。这个时候会去运行Node，但是实际上是应该skip的。
                 > 2. cleanup Node应该直接忽略Abort的channel。
                 > 
-                > 我在提交了一个PR [https://github.com/onsi/ginkgo/pull/1178](https://github.com/onsi/ginkgo/pull/1178) 解决这个问题
+                > 我提交了一个PR [https://github.com/onsi/ginkgo/pull/1178](https://github.com/onsi/ginkgo/pull/1178) 解决了这个问题
                 
             - 收到SIGINT和SIGTERM信号
                 

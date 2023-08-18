@@ -1,5 +1,5 @@
 ---
-title: "go-daemon 源码"
+title: "go-daemon 原理解析"
 date: 2023-03-19T09:38:40+08:00
 draft: false
 comments: true
