@@ -32,8 +32,9 @@ for existing subscribers.
 
 The project-level `layouts/post/single.html` preserves the theme's article
 layout but uses GitHub issue links instead of the legacy Gitalk widget.
-No OAuth client secret is required. Existing discussions are found by their
-`Gitalk` and URL labels: the comment key defaults to the first alias, or the
-current URL for articles without aliases. Set `commentPath` only when an
-older discussion uses a different URL. The comment links respect
-`comments: true` in front matter.
+No OAuth client secret is required. Discussions are found by the article path
+in the issue body, so readers do not need permission to assign issue labels.
+The comment key defaults to the first alias, or the current URL for articles
+without aliases. New discussion links prefill both the canonical URL and this
+stable key. Set `commentPath` only when an older discussion uses a different
+URL. The comment links respect `comments: true` in front matter.
