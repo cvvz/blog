@@ -1,5 +1,7 @@
 ---
 title: "底层逻辑"
+aliases:
+  - /read/the-underlying-logic/
 date: 2022-02-18T09:07:55+08:00
 draft: false
 comments: true

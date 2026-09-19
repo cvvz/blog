@@ -1,5 +1,8 @@
 ---
 title: "技术和知识"
+aliases:
+  - /read/skill-and-knowledge/
+commentPath: /thinking/skill-and-knowledge/
 date: 2022-10-16T23:07:37+08:00
 draft: false
 comments: true

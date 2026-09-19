@@ -1,5 +1,7 @@
 ---
 title: "我们为什么要睡觉"
+aliases:
+  - /read/why-we-sleep/
 date: 2023-06-05T15:43:20+08:00
 draft: false
 comments: true

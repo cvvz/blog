@@ -1,5 +1,7 @@
 ---
 title: "黑天鹅"
+aliases:
+  - /read/black-swan/
 date: 2022-06-05T22:47:51+08:00
 draft: false
 comments: true

@@ -1,5 +1,7 @@
 ---
 title: "贪婪的多巴胺"
+aliases:
+  - /read/the-molecule-of-more/
 date: 2022-03-29T14:28:19+08:00
 draft: false
 comments: true

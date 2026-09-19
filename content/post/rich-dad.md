@@ -1,5 +1,7 @@
 ---
 title: "富爸爸穷爸爸"
+aliases:
+  - /read/rich-dad/
 date: 2022-07-05T22:03:58+08:00
 draft: false
 comments: true

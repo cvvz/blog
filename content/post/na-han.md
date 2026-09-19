@@ -1,5 +1,7 @@
 ---
 title: "呐喊"
+aliases:
+  - /read/na-han/
 date: 2022-04-15T19:24:10+08:00
 draft: false
 comments: true

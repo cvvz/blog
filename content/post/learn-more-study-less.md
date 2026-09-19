@@ -1,5 +1,7 @@
 ---
 title: "如何高效学习"
+aliases:
+  - /read/learn-more-study-less/
 date: 2021-10-10T23:19:02+08:00
 draft: false
 comments: true

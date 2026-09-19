@@ -1,0 +1,14 @@
+{{- $commentPath := .RelPermalink -}}
+{{- with .Aliases -}}
+	{{- $commentPath = index . 0 -}}
+{{- end -}}
+{{- with .Params.commentPath -}}
+	{{- $commentPath = . -}}
+{{- end -}}
+{{- $issuesURL := "https://github.com/cvvz/cvvz.github.io/issues" -}}
+{{- $query := printf "is:issue label:Gitalk label:%q" $commentPath -}}
+<p>
+	<a href="{{ $issuesURL }}?q={{ $query | urlquery }}" target="_blank" rel="noopener">在 GitHub 查看／参与评论</a>
+	&#183;
+	<a href="{{ $issuesURL }}/new?title={{ .Title | urlquery }}&amp;body={{ .Permalink | urlquery }}&amp;labels={{ printf "Gitalk,%s" $commentPath | urlquery }}" target="_blank" rel="noopener">发起评论</a>
+</p>

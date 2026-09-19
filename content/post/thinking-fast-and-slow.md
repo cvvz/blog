@@ -1,5 +1,7 @@
 ---
 title: "思考，快与慢"
+aliases:
+  - /read/thinking-fast-and-slow/
 date: 2022-05-04T17:57:56+08:00
 draft: false
 comments: true

@@ -1,5 +1,7 @@
 ---
 title: "沉默的大多数"
+aliases:
+  - /read/the-silent-majority/
 date: 2022-04-13T08:16:59+08:00
 draft: false
 comments: true
