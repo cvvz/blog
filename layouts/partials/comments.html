@@ -6,10 +6,21 @@
 	{{- $commentPath = . -}}
 {{- end -}}
 {{- $issuesURL := "https://github.com/cvvz/cvvz.github.io/issues" -}}
-{{- $query := printf "is:issue in:body %q" $commentPath -}}
-{{- $body := printf "%s\n\n%s" .Permalink $commentPath -}}
-<p>
-	<a href="{{ $issuesURL }}?q={{ $query | urlquery }}" target="_blank" rel="noopener">在 GitHub 查看／参与评论</a>
-	&#183;
-	<a href="{{ $issuesURL }}/new?title={{ .Title | urlquery }}&amp;body={{ $body | urlquery }}" target="_blank" rel="noopener">发起评论</a>
+{{- $issueNumber := index .Site.Data.comment_issues $commentPath -}}
+{{- $discussionURL := printf "%s?q=%s" $issuesURL (printf "is:issue in:title %q" $commentPath | urlquery) -}}
+{{- with $issueNumber -}}
+	{{- $discussionURL = printf "%s/%v" $issuesURL . -}}
+{{- end -}}
+<script src="https://utteranc.es/client.js"
+	repo="cvvz/cvvz.github.io"
+	{{ if $issueNumber }}issue-number="{{ $issueNumber }}"{{ else }}issue-term="{{ $commentPath }}"{{ end }}
+	theme="github-light"
+	crossorigin="anonymous"
+	async>
+</script>
+<noscript>
+	<p>请启用 JavaScript 以加载评论框。</p>
+</noscript>
+<p class="comments-help">
+	<small>评论框无法加载时，可<a href="{{ $discussionURL }}" target="_blank" rel="noopener">在 GitHub 查看或参与讨论</a>。</small>
 </p>

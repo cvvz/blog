@@ -31,10 +31,29 @@ redirects to `/post/`. The RSS-only `content/read/_index.md` and
 for existing subscribers.
 
 The project-level `layouts/post/single.html` preserves the theme's article
-layout but uses GitHub issue links instead of the legacy Gitalk widget.
-No OAuth client secret is required. Discussions are found by the article path
-in the issue body, so readers do not need permission to assign issue labels.
-The comment key defaults to the first alias, or the current URL for articles
-without aliases. New discussion links prefill both the canonical URL and this
-stable key. Set `commentPath` only when an older discussion uses a different
-URL. The comment links respect `comments: true` in front matter.
+layout and embeds Utterances through `layouts/partials/comments.html` for
+articles with `comments: true`. Readers sign in with GitHub to comment without
+leaving the article's comment UI. No OAuth client secret belongs in the site.
+
+## Comments
+
+Install the [Utterances GitHub App](https://github.com/apps/utterances) with
+access only to the public `cvvz/cvvz.github.io` repository. Issues must remain
+enabled. The app needs issue read/write access, not code write access.
+
+`data/comment_issues.json` maps existing Gitalk discussion keys to their issue
+numbers, so Utterances displays the same discussions instead of creating
+duplicates. If an old key has multiple threads, retain the one Gitalk selected
+(the newest matching issue). Do not delete or recreate existing issues.
+
+The stable key defaults to the first alias, or the current URL for articles
+without aliases. Set `commentPath` only when an older discussion uses a
+different URL. For new articles without a mapped issue, Utterances uses this
+key as `issue-term` and creates a discussion when the first comment is posted.
+Readers do not need permission to assign issue labels.
+
+`static/utterances.json` becomes `utterances.json` at the publication repository
+root and lists the production origins permitted by the widget. Update it if
+the site domain changes. Local previews can display public comments, but are
+not listed as allowed posting origins. The widget uses the light theme to
+match the blog and provides a GitHub fallback link if it cannot load.
